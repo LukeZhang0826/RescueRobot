@@ -1572,7 +1572,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "MCU_Module:RaspberryPi_Pico_Extensive"
+		(symbol "MCU_Module:RaspberryPi_Pico_W_Extensive"
 			(pin_names
 				(offset 0.762)
 			)
@@ -1588,7 +1588,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "RaspberryPi_Pico"
+			(property "Value" "RaspberryPi_Pico_W"
 				(at 7.62 35.56 0)
 				(effects
 					(font
@@ -1597,7 +1597,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" "Module:RaspberryPi_Pico_SMD"
+			(property "Footprint" "Module:RaspberryPi_Pico_W_SMD"
 				(at 0 -46.99 0)
 				(effects
 					(font
@@ -1606,7 +1606,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf"
+			(property "Datasheet" "https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf"
 				(at 0 -49.53 0)
 				(effects
 					(font
@@ -1615,7 +1615,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Versatile and inexpensive microcontroller module (with full pinout for test point and debug connections) powered by RP2040 dual-core Arm Cortex-M0+ processor up to 133 MHz, 264kB SRAM, 2MB QSPI flash; also supports Raspberry Pi Pico 2"
+			(property "Description" "Versatile and inexpensive wireless microcontroller module (with full pinout for test point and debug connections) powered by RP2040 dual-core Arm Cortex-M0+ processor up to 133 MHz, 264kB SRAM, 2MB QSPI flash, Infineon CYW43439 2.4GHz 802.11n wireless LAN; also supports Raspberry Pi Pico 2 W"
 				(at 0 -52.07 0)
 				(effects
 					(font
@@ -1624,7 +1624,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "RP2350A M33 RISC-V Hazard3 usb swd"
+			(property "ki_keywords" "RP2350A M33 RISC-V Hazard3 usb swd wifi bluetooth"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1633,7 +1633,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "RaspberryPi?Pico?SMD"
+			(property "ki_fp_filters" "RaspberryPi?Pico?W?SMD"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1642,7 +1642,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "RaspberryPi_Pico_Extensive_0_1"
+			(symbol "RaspberryPi_Pico_W_Extensive_0_1"
 				(rectangle
 					(start -19.05 34.29)
 					(end 19.05 -31.75)
@@ -1715,7 +1715,7 @@
 					)
 				)
 			)
-			(symbol "RaspberryPi_Pico_Extensive_1_1"
+			(symbol "RaspberryPi_Pico_W_Extensive_1_1"
 				(pin input line
 					(at -22.86 30.48 0)
 					(length 3.81)
@@ -3642,37 +3642,37 @@
 		)
 		(uuid "0247e895-4a81-48a9-8a5b-57d3baea3278")
 	)
-	(label "CLK"
-		(at 254 68.58 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "0aa30d9e-b98e-4ae6-8526-018594306200")
-	)
-	(label "5V_EN"
-		(at 254 78.74 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "14281842-30aa-47fb-b61f-6409eab9804b")
-	)
-	(label "EB2"
-		(at 208.28 78.74 180)
+	(label "SA_PWR"
+		(at 196.85 73.66 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "161358d0-c2f8-4f2b-be51-ebd5e5ad9ab7")
+		(uuid "0bb44665-58d8-4a6b-bb05-634ff533aa6d")
 	)
-	(label "MA2"
+	(label "AIN1"
+		(at 196.85 83.82 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "13989ba5-8737-4886-b10c-c8fee7888f42")
+	)
+	(label "Vchg"
+		(at 242.57 101.6 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "14be5f11-d09a-44e3-99b3-20814e316ad5")
+	)
+	(label "MA1"
 		(at 31.75 54.61 180)
 		(effects
 			(font
@@ -3691,16 +3691,6 @@
 			(justify right bottom)
 		)
 		(uuid "195bb166-afe6-4269-92d2-562740ff1ee8")
-	)
-	(label "EB1"
-		(at 208.28 76.2 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "1aea5907-68b7-496d-a652-9df2c5b7914c")
 	)
 	(label "BIN1"
 		(at 148.59 41.91 180)
@@ -3722,6 +3712,16 @@
 		)
 		(uuid "21020b82-e325-4bd2-8210-f8adcb936d8f")
 	)
+	(label "BIN2"
+		(at 196.85 88.9 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "22632a18-2b0b-4e27-beb0-1f5ab7950cb7")
+	)
 	(label "SB_PWR"
 		(at 20.32 135.89 180)
 		(effects
@@ -3732,35 +3732,15 @@
 		)
 		(uuid "23afc0ed-9209-4358-877d-d1d2da9ea9db")
 	)
-	(label "EA1"
-		(at 208.28 71.12 180)
+	(label "AIN2"
+		(at 196.85 86.36 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "2d35f406-0941-4aa0-91c0-d7813e1fb2b3")
-	)
-	(label "BIN1"
-		(at 208.28 60.96 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "3307a743-1c55-4dc5-a8a5-5683c74aba20")
-	)
-	(label "BIN2"
-		(at 208.28 63.5 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "39be3b42-8f95-4915-bd67-b4effb4bfb4c")
+		(uuid "2f6bbaa9-0600-45d7-bcbe-7915be53327f")
 	)
 	(label "EA1"
 		(at 31.75 46.99 180)
@@ -3772,6 +3752,26 @@
 		)
 		(uuid "3b5443b7-b3d4-4b33-8757-64b47a9aa429")
 	)
+	(label "SA_PWM"
+		(at 196.85 76.2 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "3e941641-8c88-4da5-8bd1-91d6e2866564")
+	)
+	(label "CLK"
+		(at 242.57 81.28 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "4277b4ae-41e2-43c7-9848-93c3cfc27853")
+	)
 	(label "AIN2"
 		(at 148.59 46.99 180)
 		(effects
@@ -3782,7 +3782,7 @@
 		)
 		(uuid "4509d7f9-6da2-4b7a-a44e-f2003dddda6c")
 	)
-	(label "MA1"
+	(label "MA2"
 		(at 31.75 57.15 180)
 		(effects
 			(font
@@ -3791,6 +3791,16 @@
 			(justify right bottom)
 		)
 		(uuid "46a92c16-2054-4de4-af24-4ae1806b8385")
+	)
+	(label "SB_PWM"
+		(at 196.85 109.22 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "48050308-9b06-4c8d-aded-90338abd11cf")
 	)
 	(label "CLK"
 		(at 31.75 86.36 180)
@@ -3822,6 +3832,16 @@
 		)
 		(uuid "4c9205e8-5c4a-4538-9007-b13ab710c25c")
 	)
+	(label "EA1"
+		(at 196.85 106.68 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "4fb9eb89-99e5-40df-8f89-e4e84a7c71ba")
+	)
 	(label "MA1"
 		(at 148.59 73.66 180)
 		(effects
@@ -3831,6 +3851,16 @@
 			(justify right bottom)
 		)
 		(uuid "56eab768-de7a-4aad-92d2-34fd31b837e8")
+	)
+	(label "5V_EN"
+		(at 242.57 91.44 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5b00a15f-54e0-4c2c-bede-7108f2858f50")
 	)
 	(label "CS"
 		(at 31.75 93.98 180)
@@ -3862,7 +3892,27 @@
 		)
 		(uuid "6b9997db-a5fa-4768-81f4-c9eb08cdfd99")
 	)
-	(label "MB1"
+	(label "EB1"
+		(at 196.85 78.74 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "6d38aaa4-8d49-423b-9901-906c97409bce")
+	)
+	(label "EB2"
+		(at 196.85 81.28 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "75be7589-1bf8-4568-8963-7b4847298d63")
+	)
+	(label "MB2"
 		(at 31.75 77.47 180)
 		(effects
 			(font
@@ -3871,6 +3921,16 @@
 			(justify right bottom)
 		)
 		(uuid "7e595f87-8670-40f9-a7e6-18a48f522eff")
+	)
+	(label "MOSI"
+		(at 242.57 83.82 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "80805e21-1c3f-44fa-bba7-81ae591faf76")
 	)
 	(label "nSLEEP"
 		(at 148.59 52.07 180)
@@ -3881,16 +3941,6 @@
 			(justify right bottom)
 		)
 		(uuid "82f3ade6-25e4-42f8-bce1-b73bf2eb9e77")
-	)
-	(label "MOSI"
-		(at 254 71.12 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "8e961286-0cd5-4838-8668-9431e9743b35")
 	)
 	(label "MISO"
 		(at 31.75 91.44 180)
@@ -3912,6 +3962,36 @@
 		)
 		(uuid "97bda646-c5a2-4741-8c32-1e3e3f4e72e9")
 	)
+	(label "BIN1"
+		(at 196.85 91.44 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "99fd9e2c-de7f-44c6-8b7a-0f967b4171c5")
+	)
+	(label "MISO"
+		(at 242.57 86.36 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9a673d41-8fb3-429f-ba6a-350ab232d2e4")
+	)
+	(label "EA2"
+		(at 196.85 104.14 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "b4911f79-5a70-459a-8191-d7c736901be2")
+	)
 	(label "EB1"
 		(at 31.75 67.31 180)
 		(effects
@@ -3921,16 +4001,6 @@
 			(justify right bottom)
 		)
 		(uuid "b57e2044-9bca-4acf-9baa-23fa2e60ba75")
-	)
-	(label "AIN2"
-		(at 208.28 68.58 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "b83bc870-a3bc-4d49-a325-3f9fa9326887")
 	)
 	(label "SA_PWR"
 		(at 20.32 109.22 180)
@@ -3952,27 +4022,17 @@
 		)
 		(uuid "bd5c9978-29b5-44d3-8c58-9c85250e6c2b")
 	)
-	(label "EA2"
-		(at 208.28 73.66 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "c02543e8-2c45-4b77-a366-5af97836087a")
-	)
-	(label "MISO"
-		(at 254 73.66 0)
+	(label "CS"
+		(at 242.57 88.9 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "c1bef092-a2fe-4cf0-9190-caeb2fe6cf78")
+		(uuid "c8c51235-e011-4007-9576-c9d271c942da")
 	)
-	(label "MB2"
+	(label "MB1"
 		(at 31.75 74.93 180)
 		(effects
 			(font
@@ -3981,16 +4041,6 @@
 			(justify right bottom)
 		)
 		(uuid "cdc9cc1f-dbaa-46f5-88a1-7472a1249089")
-	)
-	(label "Vchg"
-		(at 254 88.9 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "d2b96fa2-5251-4de7-995a-e5cbc0dc1c68")
 	)
 	(label "EA2"
 		(at 31.75 49.53 180)
@@ -4022,25 +4072,15 @@
 		)
 		(uuid "dd63a433-01e6-431e-800e-e70fa4e2e610")
 	)
-	(label "AIN1"
-		(at 208.28 66.04 180)
+	(label "SB_PWR"
+		(at 196.85 111.76 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "e8135714-8ece-40e9-ba68-4caef2174dcb")
-	)
-	(label "CS"
-		(at 254 76.2 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "fb5a7c75-a815-42cc-b8a3-72989e335f5b")
+		(uuid "e24e85e4-9116-437c-85de-d0fbebe590cc")
 	)
 	(symbol
 		(lib_id "power:+5V")
@@ -4512,7 +4552,8 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x08")
-		(at 153.67 68.58 0)
+		(at 162.56 68.58 0)
+		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4521,7 +4562,7 @@
 		(fields_autoplaced yes)
 		(uuid "249c1bbf-6ccd-4806-9106-788c9d35fe92")
 		(property "Reference" "J10"
-			(at 156.21 68.5799 0)
+			(at 160.02 68.5799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4530,7 +4571,7 @@
 			)
 		)
 		(property "Value" "Conn_01x08"
-			(at 156.21 71.1199 0)
+			(at 160.02 71.1199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4539,7 +4580,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical"
-			(at 153.67 68.58 0)
+			(at 162.56 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4548,7 +4589,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 153.67 68.58 0)
+			(at 162.56 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4557,7 +4598,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 153.67 68.58 0)
+			(at 162.56 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4667,7 +4708,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 236.22 38.1 0)
+		(at 224.79 50.8 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4676,7 +4717,7 @@
 		(fields_autoplaced yes)
 		(uuid "368d70db-d67e-4869-8d43-d93b16cd7582")
 		(property "Reference" "#PWR021"
-			(at 236.22 41.91 0)
+			(at 224.79 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4685,7 +4726,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 236.22 33.02 0)
+			(at 224.79 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4693,7 +4734,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 236.22 38.1 0)
+			(at 224.79 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4702,7 +4743,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 236.22 38.1 0)
+			(at 224.79 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4711,7 +4752,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 236.22 38.1 0)
+			(at 224.79 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4723,7 +4764,7 @@
 			(uuid "6661c5f9-28bd-4cb2-87d4-8f5b71fa4130")
 		)
 		(instances
-			(project ""
+			(project "BasePCB"
 				(path "/8159173f-8a3c-4df4-94ec-f70f0a37f59f"
 					(reference "#PWR021")
 					(unit 1)
@@ -4853,7 +4894,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "4a80ce3b-867a-470a-a50c-f5db73ffd256")
+			(uuid "4a80ce3b-867a-470a-a50c-f5db73ffd257")
 		)
 		(instances
 			(project ""
@@ -5017,6 +5058,217 @@
 			(project ""
 				(path "/8159173f-8a3c-4df4-94ec-f70f0a37f59f"
 					(reference "J8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "MCU_Module:RaspberryPi_Pico_W_Extensive")
+		(at 219.71 88.9 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "54fe2dff-6bcb-488e-b98e-9090db85867f")
+		(property "Reference" "A2"
+			(at 221.8533 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "RaspberryPi_Pico_W"
+			(at 221.8533 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Module:RaspberryPi_Pico_W_SMD"
+			(at 219.71 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf"
+			(at 219.71 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Versatile and inexpensive wireless microcontroller module (with full pinout for test point and debug connections) powered by RP2040 dual-core Arm Cortex-M0+ processor up to 133 MHz, 264kB SRAM, 2MB QSPI flash, Infineon CYW43439 2.4GHz 802.11n wireless LAN; also supports Raspberry Pi Pico 2 W"
+			(at 219.71 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "10"
+			(uuid "cabf61c6-1fd1-41b1-8de9-f86575a7c979")
+		)
+		(pin "25"
+			(uuid "ff084b69-61ad-45c9-87e3-bf5a066f2914")
+		)
+		(pin "6"
+			(uuid "39866a8b-c43a-4c3c-bde2-cd604a682478")
+		)
+		(pin "26"
+			(uuid "fd23d295-48d3-44da-9960-eebee51f0742")
+		)
+		(pin "TP1"
+			(uuid "088ac403-81e3-41fc-8055-92323548a4bc")
+		)
+		(pin "16"
+			(uuid "5583db97-ac65-44a0-aa26-5940f7f2608c")
+		)
+		(pin "40"
+			(uuid "cb3202f3-53f4-430a-a562-0133665991a7")
+		)
+		(pin "9"
+			(uuid "d4502942-2dd1-49b1-aae1-55cecf458204")
+		)
+		(pin "29"
+			(uuid "7c280bb2-ceec-4c23-8bc6-e9c4f71d46ac")
+		)
+		(pin "36"
+			(uuid "6a8ba9fd-a9d8-4a24-a8e5-0d4c871647ae")
+		)
+		(pin "34"
+			(uuid "d299a4bd-dea9-4bae-898c-1678f48b9259")
+		)
+		(pin "24"
+			(uuid "c3c49502-1fce-4629-914a-7ef2dff83e6b")
+		)
+		(pin "39"
+			(uuid "968aa433-8d64-4a7f-8222-91603b42f7c8")
+		)
+		(pin "18"
+			(uuid "63236be4-551a-4517-8814-f4cf265c8408")
+		)
+		(pin "20"
+			(uuid "815d0cc9-370d-4f79-8796-6e27d79a0a3d")
+		)
+		(pin "5"
+			(uuid "64f8f142-9634-4898-bc13-c022687a7781")
+		)
+		(pin "33"
+			(uuid "06017650-4bfb-498d-9c7b-b4cb54abae84")
+		)
+		(pin "1"
+			(uuid "4752559e-0d4e-4225-9ff5-836d2a177ee5")
+		)
+		(pin "8"
+			(uuid "7595d813-e41d-42bd-8bce-1f1a717d5be8")
+		)
+		(pin "28"
+			(uuid "dfb3b650-4e27-4d80-a0be-1129195710c3")
+		)
+		(pin "D1"
+			(uuid "ebd9e5b8-9828-482c-81a9-0f56b32c6456")
+		)
+		(pin "22"
+			(uuid "8128c00a-7904-4f9d-a4a7-9d6fa300f5db")
+		)
+		(pin "37"
+			(uuid "8a78ce08-7ca7-481f-b50a-390303102497")
+		)
+		(pin "TP6"
+			(uuid "ea2dad1e-0f81-46e8-b2f9-bb950c39270d")
+		)
+		(pin "27"
+			(uuid "a9083a4b-2d84-4cb0-b397-aad31f208271")
+		)
+		(pin "TP5"
+			(uuid "b49171ae-e332-4abb-ba2e-7bff4045d414")
+		)
+		(pin "7"
+			(uuid "b124d14d-38bf-4511-9aa0-32cd47d34178")
+		)
+		(pin "19"
+			(uuid "2ec34cd9-1e48-4998-ac34-e1d09988ce8e")
+		)
+		(pin "17"
+			(uuid "e0c64c35-2f8a-49fe-8ef2-2557af75b13b")
+		)
+		(pin "35"
+			(uuid "990f199b-b7b7-422f-b1a3-0d3118961a1e")
+		)
+		(pin "14"
+			(uuid "7505f46e-c1db-4183-99b0-cf7bc8a1aeb1")
+		)
+		(pin "TP4"
+			(uuid "a11fe184-2576-4b67-88d3-bcb36fa44d73")
+		)
+		(pin "32"
+			(uuid "d140daed-58c4-4a6e-8b47-edbcc047f98d")
+		)
+		(pin "D3"
+			(uuid "feb3b7e7-4068-4f37-988a-ba36b6d11d19")
+		)
+		(pin "38"
+			(uuid "f97e8b24-d8db-4806-a23f-07fe55139ed7")
+		)
+		(pin "21"
+			(uuid "6f3b281d-eb59-4eee-8f09-91b9e8b97d5b")
+		)
+		(pin "12"
+			(uuid "7b050e04-cafe-4fcd-88cf-12919db5bee3")
+		)
+		(pin "31"
+			(uuid "54a613a2-fd34-42c8-bad4-d197bf05940c")
+		)
+		(pin "TP3"
+			(uuid "3f702411-02b4-4058-a5b2-32fd33866ad0")
+		)
+		(pin "11"
+			(uuid "3bdb6527-66ba-4ad6-8f5b-7dc090e38eca")
+		)
+		(pin "13"
+			(uuid "7df719e9-6fb9-439e-8ff4-c37e8fd11c76")
+		)
+		(pin "23"
+			(uuid "c956696b-c174-4846-88b6-d684f3b25e36")
+		)
+		(pin "2"
+			(uuid "6cdb0770-2eb1-47b0-acd2-faef778360c1")
+		)
+		(pin "4"
+			(uuid "596c7fc5-25fc-4f74-9e52-195614cfd957")
+		)
+		(pin "TP2"
+			(uuid "aff5a713-63d0-4eca-8698-8170fd4e925b")
+		)
+		(pin "D2"
+			(uuid "d2cde139-0c89-4e8d-801a-9fccdad6aeec")
+		)
+		(pin "30"
+			(uuid "829aa3bd-b058-40b8-800a-06bbe8f5c7a3")
+		)
+		(pin "15"
+			(uuid "cbf003d4-5645-4495-81c2-548dca8bbd6c")
+		)
+		(pin "3"
+			(uuid "c6e03b03-52f9-4936-acd6-7861d3998e79")
+		)
+		(instances
+			(project ""
+				(path "/8159173f-8a3c-4df4-94ec-f70f0a37f59f"
+					(reference "A2")
 					(unit 1)
 				)
 			)
@@ -5317,7 +5569,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "330k"
+		(property "Value" "56k"
 			(at 137.16 115.5699 0)
 			(effects
 				(font
@@ -5437,7 +5689,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 226.06 38.1 0)
+		(at 214.63 50.8 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5446,7 +5698,7 @@
 		(fields_autoplaced yes)
 		(uuid "81d406cf-26ba-4974-b03e-6c8cf119b9dc")
 		(property "Reference" "#PWR020"
-			(at 226.06 41.91 0)
+			(at 214.63 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5455,7 +5707,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 226.06 33.02 0)
+			(at 214.63 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5463,7 +5715,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 226.06 38.1 0)
+			(at 214.63 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5472,7 +5724,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 226.06 38.1 0)
+			(at 214.63 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5481,7 +5733,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 226.06 38.1 0)
+			(at 214.63 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5493,7 +5745,7 @@
 			(uuid "3161ac46-22f3-4660-805d-f41bc94f0031")
 		)
 		(instances
-			(project ""
+			(project "BasePCB"
 				(path "/8159173f-8a3c-4df4-94ec-f70f0a37f59f"
 					(reference "#PWR020")
 					(unit 1)
@@ -5557,7 +5809,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "be1d29e2-efa6-4e99-8ba9-b2a13b80b550")
+			(uuid "be1d29e2-efa6-4e99-8ba9-b2a13b80b551")
 		)
 		(instances
 			(project ""
@@ -5570,7 +5822,8 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x08")
-		(at 153.67 44.45 0)
+		(at 162.56 44.45 0)
+		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5579,7 +5832,7 @@
 		(fields_autoplaced yes)
 		(uuid "9bf77059-e31f-4b77-834c-e2a442f68aa8")
 		(property "Reference" "J9"
-			(at 156.21 44.4499 0)
+			(at 160.02 44.4499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5588,7 +5841,7 @@
 			)
 		)
 		(property "Value" "Conn_01x08"
-			(at 156.21 46.9899 0)
+			(at 160.02 46.9899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5597,7 +5850,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical"
-			(at 153.67 44.45 0)
+			(at 162.56 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5606,7 +5859,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 153.67 44.45 0)
+			(at 162.56 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5615,7 +5868,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 153.67 44.45 0)
+			(at 162.56 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5624,28 +5877,28 @@
 			)
 		)
 		(pin "7"
-			(uuid "b827fd58-4f75-4fa5-82e7-be2d8484c204")
+			(uuid "b827fd58-4f75-4fa5-82e7-be2d8484c205")
 		)
 		(pin "5"
-			(uuid "b90a5e4f-d497-40e0-8cf0-5754282a6716")
+			(uuid "b90a5e4f-d497-40e0-8cf0-5754282a6717")
 		)
 		(pin "6"
-			(uuid "afd6b64e-3d76-42f6-b927-9ccb11c40bc7")
+			(uuid "afd6b64e-3d76-42f6-b927-9ccb11c40bc8")
 		)
 		(pin "4"
-			(uuid "c9890feb-2d77-473f-ae58-da5cd1e2e377")
+			(uuid "c9890feb-2d77-473f-ae58-da5cd1e2e378")
 		)
 		(pin "8"
-			(uuid "f23f4c92-1611-49bb-87f8-ac29527c0235")
+			(uuid "f23f4c92-1611-49bb-87f8-ac29527c0236")
 		)
 		(pin "2"
-			(uuid "e363a0f3-6db3-4ab7-b340-48bb936e7af1")
+			(uuid "e363a0f3-6db3-4ab7-b340-48bb936e7af2")
 		)
 		(pin "1"
-			(uuid "02fd98eb-bead-4166-94e7-6758b7d72aad")
+			(uuid "02fd98eb-bead-4166-94e7-6758b7d72aae")
 		)
 		(pin "3"
-			(uuid "6e7c0d70-c472-4d99-8ea2-b824f6cf50c5")
+			(uuid "6e7c0d70-c472-4d99-8ea2-b824f6cf50c6")
 		)
 		(instances
 			(project ""
@@ -5712,7 +5965,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "6a6cf507-0faf-458b-918b-d26db82de2e7")
+			(uuid "6a6cf507-0faf-458b-918b-d26db82de2e8")
 		)
 		(instances
 			(project ""
@@ -5947,7 +6200,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 231.14 111.76 0)
+		(at 219.71 124.46 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5956,7 +6209,7 @@
 		(fields_autoplaced yes)
 		(uuid "bf339b3f-e615-4e64-ba71-e9263396ad81")
 		(property "Reference" "#PWR019"
-			(at 231.14 118.11 0)
+			(at 219.71 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5965,7 +6218,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 231.14 116.84 0)
+			(at 219.71 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5973,7 +6226,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 231.14 111.76 0)
+			(at 219.71 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5982,7 +6235,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 231.14 111.76 0)
+			(at 219.71 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5991,7 +6244,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 231.14 111.76 0)
+			(at 219.71 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6003,7 +6256,7 @@
 			(uuid "9a5bf0af-cbdb-4b68-a2cf-0960b6399bd8")
 		)
 		(instances
-			(project ""
+			(project "BasePCB"
 				(path "/8159173f-8a3c-4df4-94ec-f70f0a37f59f"
 					(reference "#PWR019")
 					(unit 1)
@@ -6030,7 +6283,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "570k"
+		(property "Value" "100k"
 			(at 137.16 104.1399 0)
 			(effects
 				(font
@@ -6067,10 +6320,10 @@
 			)
 		)
 		(pin "2"
-			(uuid "2e4206f3-58c9-468c-b5dc-ddac6e9b5fdd")
+			(uuid "2e4206f3-58c9-468c-b5dc-ddac6e9b5fde")
 		)
 		(pin "1"
-			(uuid "7d8d2381-6a9f-40fe-96a0-f8b1cc481dc3")
+			(uuid "7d8d2381-6a9f-40fe-96a0-f8b1cc481dc4")
 		)
 		(instances
 			(project ""
@@ -6269,10 +6522,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "baacf503-afcb-4acb-b1b7-016ede398ffd")
+			(uuid "baacf503-afcb-4acb-b1b7-016ede398ffe")
 		)
 		(pin "2"
-			(uuid "ed9b15ea-7eb1-46a9-8b1c-d1eba5c767e4")
+			(uuid "ed9b15ea-7eb1-46a9-8b1c-d1eba5c767e5")
 		)
 		(instances
 			(project ""
@@ -6409,13 +6662,13 @@
 			)
 		)
 		(pin "3"
-			(uuid "a34504c6-450a-4dbd-8bd8-d0cf74df9c6d")
+			(uuid "a34504c6-450a-4dbd-8bd8-d0cf74df9c6e")
 		)
 		(pin "2"
-			(uuid "b8884aa7-3eab-4beb-8d56-94ee08aab329")
+			(uuid "b8884aa7-3eab-4beb-8d56-94ee08aab32a")
 		)
 		(pin "1"
-			(uuid "c9a2737d-3a78-4adf-adf6-f93f02ef0944")
+			(uuid "c9a2737d-3a78-4adf-adf6-f93f02ef0945")
 		)
 		(instances
 			(project ""
@@ -6549,22 +6802,22 @@
 			)
 		)
 		(pin "6"
-			(uuid "6c521476-491e-41a0-86e3-4c6ff78c1f28")
+			(uuid "6c521476-491e-41a0-86e3-4c6ff78c1f29")
 		)
 		(pin "2"
-			(uuid "e3076d20-50db-45b0-b5b2-0454864cd384")
+			(uuid "e3076d20-50db-45b0-b5b2-0454864cd385")
 		)
 		(pin "3"
-			(uuid "dddf08ac-1370-430a-a1fd-b85657be0d1a")
+			(uuid "dddf08ac-1370-430a-a1fd-b85657be0d1b")
 		)
 		(pin "4"
-			(uuid "b9472ff2-dfeb-496e-9dd5-c2e09967d9d2")
+			(uuid "b9472ff2-dfeb-496e-9dd5-c2e09967d9d3")
 		)
 		(pin "1"
-			(uuid "37d1d10f-0a2e-4ccc-a5d0-34a91d8932c8")
+			(uuid "37d1d10f-0a2e-4ccc-a5d0-34a91d8932c9")
 		)
 		(pin "5"
-			(uuid "8851d7fb-8dc0-4325-ae2f-1f347ea79212")
+			(uuid "8851d7fb-8dc0-4325-ae2f-1f347ea79213")
 		)
 		(instances
 			(project ""
@@ -6700,229 +6953,18 @@
 			)
 		)
 		(pin "2"
-			(uuid "c3d54152-d06a-4c96-af95-7cfa43c36d71")
+			(uuid "c3d54152-d06a-4c96-af95-7cfa43c36d72")
 		)
 		(pin "1"
-			(uuid "049de980-afd7-4963-b738-58fab5cdf54d")
+			(uuid "049de980-afd7-4963-b738-58fab5cdf54e")
 		)
 		(pin "3"
-			(uuid "a2242bf6-67c9-4692-829a-402569c49319")
+			(uuid "a2242bf6-67c9-4692-829a-402569c4931a")
 		)
 		(instances
 			(project ""
 				(path "/8159173f-8a3c-4df4-94ec-f70f0a37f59f"
 					(reference "Q2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "MCU_Module:RaspberryPi_Pico_Extensive")
-		(at 231.14 76.2 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "f7b9309a-d156-457c-bd6a-580466a2c348")
-		(property "Reference" "A1"
-			(at 233.2833 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "RaspberryPi_Pico"
-			(at 233.2833 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Module:RaspberryPi_Pico_SMD"
-			(at 231.14 123.19 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf"
-			(at 231.14 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Versatile and inexpensive microcontroller module (with full pinout for test point and debug connections) powered by RP2040 dual-core Arm Cortex-M0+ processor up to 133 MHz, 264kB SRAM, 2MB QSPI flash; also supports Raspberry Pi Pico 2"
-			(at 231.14 128.27 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "D3"
-			(uuid "5fa68a62-052d-41a5-bfba-988db613ac59")
-		)
-		(pin "D1"
-			(uuid "90a5919b-a2e1-49de-84c8-22dd064df403")
-		)
-		(pin "28"
-			(uuid "ecf5904a-cad3-4d4b-b392-68a18167fb59")
-		)
-		(pin "26"
-			(uuid "4a8d80ee-3831-4e64-be91-19cfb07b46b2")
-		)
-		(pin "21"
-			(uuid "88b35e72-3506-4ecf-af2d-c65570ade14e")
-		)
-		(pin "1"
-			(uuid "741c914b-ab9f-426e-a561-fa337ca8ba08")
-		)
-		(pin "5"
-			(uuid "a853e2c7-6ab4-4f45-b376-ad416f544e6d")
-		)
-		(pin "13"
-			(uuid "acdba215-04b8-45c6-9ea0-9f370d58d708")
-		)
-		(pin "20"
-			(uuid "4d7b1941-a126-48b4-8334-91f78c307792")
-		)
-		(pin "35"
-			(uuid "45839206-a540-4f8b-9dde-d0fe904ced6b")
-		)
-		(pin "17"
-			(uuid "2a7988cf-16bc-46ed-b1ee-8d5d7a72aab7")
-		)
-		(pin "TP2"
-			(uuid "a9281e7b-a693-4477-9ea6-98c396ccb1a0")
-		)
-		(pin "23"
-			(uuid "a52f5222-f363-4d03-b956-191800ff1e47")
-		)
-		(pin "33"
-			(uuid "325b5bed-3a86-4f50-a96d-bc92ce576687")
-		)
-		(pin "31"
-			(uuid "8edbf55d-7058-46ca-b30a-0fa2838da582")
-		)
-		(pin "7"
-			(uuid "3671e08e-4447-44f6-9769-c5164c243b4f")
-		)
-		(pin "4"
-			(uuid "65c86762-8642-4bb9-a810-33008f69ec34")
-		)
-		(pin "TP6"
-			(uuid "fb6824a3-2802-4938-a1b4-5462cc7f1d96")
-		)
-		(pin "38"
-			(uuid "85f4f759-64bb-41d1-ac8f-e544b54608fc")
-		)
-		(pin "24"
-			(uuid "ceaa58e6-c80e-47de-a3ad-98a7b782cf97")
-		)
-		(pin "D2"
-			(uuid "311dc571-a3bc-4252-9c7f-de25b45e5e40")
-		)
-		(pin "19"
-			(uuid "25dd7758-7cb0-4394-a1c6-e8d183d079db")
-		)
-		(pin "TP1"
-			(uuid "f25b49aa-589d-40ad-a515-fd4f1388693e")
-		)
-		(pin "32"
-			(uuid "5e4b3725-4c20-46a1-8c15-ef13136ca6bf")
-		)
-		(pin "14"
-			(uuid "f521923c-5e4b-4a64-b3c0-7f5c4c379873")
-		)
-		(pin "6"
-			(uuid "9ba99071-e25a-4f84-a5f9-92942fbf783e")
-		)
-		(pin "TP4"
-			(uuid "a67a2d94-7e8a-4d14-9608-ad747fd136eb")
-		)
-		(pin "36"
-			(uuid "06f29028-3958-49be-9b94-a7b949064d55")
-		)
-		(pin "40"
-			(uuid "a270c7fe-fdab-414c-b6fd-4f829ff6beb1")
-		)
-		(pin "37"
-			(uuid "d69fdc70-1112-4ddc-b704-4740c051d39b")
-		)
-		(pin "29"
-			(uuid "6e330dc8-b8ff-4804-93cf-7b8694da5702")
-		)
-		(pin "27"
-			(uuid "e815309b-35a8-4698-b1bb-56a154799765")
-		)
-		(pin "TP5"
-			(uuid "496a7d60-9a00-4919-a771-5aa0bf2e51d5")
-		)
-		(pin "12"
-			(uuid "a2f68a8a-5b84-4a04-8bbb-2ee41d1fc491")
-		)
-		(pin "15"
-			(uuid "4249a39c-7280-490a-a581-cce18d51bd99")
-		)
-		(pin "25"
-			(uuid "bb390bfc-f755-431f-a206-fdfd5f305522")
-		)
-		(pin "16"
-			(uuid "6c8ffbd6-8da5-45b4-bb53-5ed2e73c90eb")
-		)
-		(pin "34"
-			(uuid "06d3f527-4727-4155-989c-e959a38c5a33")
-		)
-		(pin "22"
-			(uuid "4c46c1da-a6af-4be5-9715-9643ad0fe4d4")
-		)
-		(pin "9"
-			(uuid "80e7fb5c-6ea8-484b-98f9-9356bb79a1ce")
-		)
-		(pin "3"
-			(uuid "0ad9df91-49ad-479b-aa55-afb8e1ca8ca9")
-		)
-		(pin "10"
-			(uuid "cc05afaa-0a13-4b04-afc0-8d8e0e11e537")
-		)
-		(pin "39"
-			(uuid "f7aa71e0-635e-4752-b45a-e1666c773dc5")
-		)
-		(pin "30"
-			(uuid "1c409ed5-6560-4e6d-90da-9b0f300368d1")
-		)
-		(pin "11"
-			(uuid "046da04c-309d-459b-a2d7-51b313b34d49")
-		)
-		(pin "18"
-			(uuid "a12585da-b249-4217-914b-1cb068c8a25b")
-		)
-		(pin "TP3"
-			(uuid "7d935a94-24dc-4cec-a41d-5efc8316ceb5")
-		)
-		(pin "2"
-			(uuid "a71baa93-4975-4b27-b3b4-18190ffce1d0")
-		)
-		(pin "8"
-			(uuid "2613c24d-1674-4e6b-bc5d-c007a238e8d1")
-		)
-		(instances
-			(project ""
-				(path "/8159173f-8a3c-4df4-94ec-f70f0a37f59f"
-					(reference "A1")
 					(unit 1)
 				)
 			)
@@ -6984,10 +7026,10 @@
 			)
 		)
 		(pin "2"
-			(uuid "5f55f831-1631-495e-9f68-05ea213cd097")
+			(uuid "5f55f831-1631-495e-9f68-05ea213cd098")
 		)
 		(pin "1"
-			(uuid "990c5bad-939c-4fb6-be51-0bbcb89845fa")
+			(uuid "990c5bad-939c-4fb6-be51-0bbcb89845fb")
 		)
 		(instances
 			(project ""

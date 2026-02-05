@@ -1,0 +1,34 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+A1,RaspberryPi_Pico_W,RaspberryPi_Pico_W_SMD_HandSolder,112.73,-112.11,-90.0,top
+C1,4.7uF,C_1210_3225Metric,127.6,-128.5,-90.0,top
+C10,0.01u,C_0402_1005Metric,106.7,-93.5,180.0,top
+C11,10u,C_1210_3225Metric,105.525,-95.75,180.0,top
+C12,2.2u,C_0402_1005Metric,108.6,-93.5,0.0,top
+C2,4.7uF,C_1210_3225Metric,131.2,-128.5,-90.0,top
+C3,0.01uF,C_0805_2012Metric,124.7,-128.1,-90.0,top
+C4,8.2nF,C_0603_1608Metric,125.075,-124.8,0.0,top
+C5,100nF,C_0805_2012Metric,115.98,-130.7,0.0,top
+C6,1nF,C_0603_1608Metric,111.4,-125.5,180.0,top
+C7,10pF,C_0805_2012Metric,114.2,-126.6,-90.0,top
+C8,47u,C_1210_3225Metric,98.6,-130.0,180.0,top
+C9,47u,C_1210_3225Metric,98.5,-133.6,180.0,top
+D2,SS24,D_SMA,116.17,-133.6,0.0,top
+J1,Batt_1,JST_PH_B2B-PH-SM4-TB_1x02-1MP_P2.00mm_Vertical,133.57,-137.1,180.0,top
+J2,Batt_2,JST_PH_B2B-PH-SM4-TB_1x02-1MP_P2.00mm_Vertical,123.89,-137.06,180.0,top
+J3,MotorA,JST_SH_BM06B-SRSS-TB_1x06-1MP_P1.00mm_Vertical,130.5,-94.0,90.0,top
+J4,MotorB,JST_SH_BM06B-SRSS-TB_1x06-1MP_P1.00mm_Vertical,95.0,-94.0,90.0,top
+J5,Pixy SPI Connection,PinHeader_1x06_P2.54mm_Vertical,95.75,-126.4,-90.0,top
+J6,ServoA,PinHeader_1x03_P2.54mm_Vertical,129.28,-86.85,90.0,top
+J7,ServoB,PinHeader_1x03_P2.54mm_Vertical,96.02,-86.65,-90.0,top
+L1,4.7u,L_APV_ANR6028,108.64,-132.2,180.0,top
+Q1,AO3400A,SOT-23,136.38,-92.55,90.0,top
+Q2,AO3400A,SOT-23,89.93,-89.8125,90.0,top
+R1,66.5k,R_0603_1608Metric,108.7,-125.8,-90.0,top
+R2,100k,R_0805_2012Metric,136.88,-98.05,-90.0,top
+R3,10.2k,R_0603_1608Metric,105.2,-125.8,90.0,top
+R4,1.96k,R_0603_1608Metric,106.9,-125.8,-90.0,top
+R5,570K,R_0603_1608Metric,131.7,-124.8,180.0,top
+R6,330K,R_0603_1608Metric,128.4,-124.8,180.0,top
+R7,100k,R_0805_2012Metric,88.88,-97.2375,-90.0,top
+U1,DRV8833RTY,Texas_RTY_WQFN-16-1EP_4x4mm_P0.65mm_EP2.1x2.1mm_ThermalVias,107.75,-90.2,-90.0,top
+U2,TPS54331,TI_SO-PowerPAD-8_ThermalVias,119.6,-126.8,180.0,top

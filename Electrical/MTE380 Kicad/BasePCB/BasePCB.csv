@@ -1,0 +1,12 @@
+"Id";"Designator";"Footprint";"Quantity";"Designation";"Supplier and ref";
+1;"J3,J4";"JST_SH_BM06B-SRSS-TB_1x06-1MP_P1.00mm_Vertical";2;"Conn_01x06_Socket";;;
+2;"A2";"RaspberryPi_Pico_W_SMD";1;"RaspberryPi_Pico_W";;;
+3;"R2,R1";"R_1206_3216Metric_Pad1.30x1.75mm_HandSolder";2;"10k";;;
+4;"Q2,Q1";"SOT-23";2;"AO3400A";;;
+5;"J7,J6";"PinHeader_1x03_P2.54mm_Vertical";2;"Conn_01x03";;;
+6;"J1,J2";"JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical";2;"Conn_01x02_Socket";;;
+7;"J10,J9";"PinHeader_1x08_P2.54mm_Vertical";2;"Conn_01x08";;;
+8;"R4";"R_1206_3216Metric_Pad1.30x1.75mm_HandSolder";1;"56k";;;
+9;"R3";"R_1206_3216Metric_Pad1.30x1.75mm_HandSolder";1;"100k";;;
+10;"J8";"PinHeader_1x04_P2.54mm_Vertical";1;"Conn_01x04";;;
+11;"J5";"PinHeader_1x06_P2.54mm_Vertical";1;"Conn_01x06";;;

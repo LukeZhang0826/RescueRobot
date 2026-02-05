@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.0,
-          "height": 1.8,
-          "width": 1.2
+          "drill": 1.0,
+          "height": 1.7,
+          "width": 1.7
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -60,11 +60,47 @@
       ],
       "drc_exclusions": [
         [
-          "items_not_allowed|115570000|117900000|765b6012-212e-443f-bb74-6593f4586b90|00000000-0000-0000-0000-000000000000",
+          "items_not_allowed|87730000|100520000|2c910e7a-cea0-4511-bc09-8189d7900011|00000000-0000-0000-0000-000000000000",
           ""
         ],
         [
-          "items_not_allowed|115570000|98520000|554d6d29-ef4e-4f0a-8161-cc760de10a47|00000000-0000-0000-0000-000000000000",
+          "items_not_allowed|87730000|119900000|97cae935-71a7-44a7-95ff-fdf32804aec4|00000000-0000-0000-0000-000000000000",
+          ""
+        ],
+        [
+          "items_not_allowed|87730000|124630000|0fc3f248-ca18-404e-b77e-1e862fc7d351|00000000-0000-0000-0000-000000000000",
+          ""
+        ],
+        [
+          "silk_overlap|106592164|93140000|479f1088-7135-4ec3-8b4f-745a1bbdfc3f|46989fa2-b4c6-4423-833e-6549c7f4aec5",
+          ""
+        ],
+        [
+          "silk_overlap|106592164|93860000|28bf4bbd-70fb-4796-ae69-fa0a16517b35|46989fa2-b4c6-4423-833e-6549c7f4aec5",
+          ""
+        ],
+        [
+          "silk_overlap|106807836|93140000|479f1088-7135-4ec3-8b4f-745a1bbdfc3f|c670c528-39d2-406a-a135-8d29cd427700",
+          ""
+        ],
+        [
+          "silk_overlap|106807836|93860000|28bf4bbd-70fb-4796-ae69-fa0a16517b35|c670c528-39d2-406a-a135-8d29cd427700",
+          ""
+        ],
+        [
+          "silk_overlap|108492164|93140000|e5abf869-01a0-484e-855e-facba54774fa|1c2203a2-4354-4a8e-a957-147622d0e939",
+          ""
+        ],
+        [
+          "silk_overlap|108492164|93860000|eba8f31d-a644-4723-b8eb-9a0a9d3c1422|1c2203a2-4354-4a8e-a957-147622d0e939",
+          ""
+        ],
+        [
+          "silk_overlap|108707836|93140000|e5abf869-01a0-484e-855e-facba54774fa|e65733b1-8a59-440d-bbef-8d6ca7540f3a",
+          ""
+        ],
+        [
+          "silk_overlap|108707836|93860000|eba8f31d-a644-4723-b8eb-9a0a9d3c1422|e65733b1-8a59-440d-bbef-8d6ca7540f3a",
           ""
         ]
       ],
@@ -482,7 +518,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "BasePCB.kicad_pro",
+    "filename": "PCBA_Board.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -518,8 +554,8 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
-      "pos_files": "",
+      "plot": "Gerbers/",
+      "pos_files": "Gerbers/",
       "specctra_dsn": "",
       "step": "",
       "svg": "",
@@ -591,12 +627,24 @@
           "label": "Datasheet",
           "name": "Datasheet",
           "show": true
+        },
+        {
+          "group_by": false,
+          "label": "Description",
+          "name": "Description",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "#",
+          "name": "${ITEM_NUMBER}",
+          "show": false
         }
       ],
       "filter_string": "",
       "group_symbols": true,
       "include_excluded_from_bom": true,
-      "name": "Default Editing",
+      "name": "",
       "sort_asc": true,
       "sort_field": "Reference"
     },
@@ -642,7 +690,7 @@
   },
   "sheets": [
     [
-      "8159173f-8a3c-4df4-94ec-f70f0a37f59f",
+      "8bf55264-0cee-4362-8f3c-57c2858b1c92",
       "Root"
     ]
   ],

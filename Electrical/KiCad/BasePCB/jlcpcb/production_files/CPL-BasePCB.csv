@@ -1,0 +1,18 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+A2,RaspberryPi_Pico_W,RaspberryPi_Pico_W_SMD,140.57,-110.11,-90.0,top
+J1,Conn_01x02_Socket,JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,148.57,-127.11,0.0,top
+J10,Conn_01x08,PinHeader_1x08_P2.54mm_Vertical,140.57,-86.11,90.0,top
+J2,Conn_01x02_Socket,JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,156.57,-127.11,0.0,top
+J3,Conn_01x06_Socket,JST_SH_BM06B-SRSS-TB_1x06-1MP_P1.00mm_Vertical,156.57,-89.11,90.0,top
+J4,Conn_01x06_Socket,JST_SH_BM06B-SRSS-TB_1x06-1MP_P1.00mm_Vertical,124.77,-89.11,90.0,top
+J5,Conn_01x06,PinHeader_1x06_P2.54mm_Vertical,124.3,-124.11,90.0,top
+J6,Conn_01x03,PinHeader_1x03_P2.54mm_Vertical,154.57,-81.11,-90.0,top
+J7,Conn_01x03,PinHeader_1x03_P2.54mm_Vertical,126.57,-81.11,90.0,top
+J8,Conn_01x04,PinHeader_1x04_P2.54mm_Vertical,138.3,-128.61,-90.0,top
+J9,Conn_01x08,PinHeader_1x08_P2.54mm_Vertical,140.57,-96.27,90.0,top
+Q1,AO3400A,SOT-23,117.62,-90.11,90.0,top
+Q2,AO3400A,SOT-23,162.52,-88.1725,90.0,top
+R1,10k,R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,163.52,-93.1725,90.0,top
+R2,10k,R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,117.57,-95.0475,90.0,top
+R3,100k,R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,144.32,-123.11,180.0,top
+R4,56k,R_1206_3216Metric_Pad1.30x1.75mm_HandSolder,139.27,-123.11,180.0,top

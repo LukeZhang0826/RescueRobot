@@ -1,135 +1,85 @@
-from machine import SPI, Pin
-import time
+from machine import Pin
+import utime
 
-# Pixy2 SPI response sync word (0xC1AF on wire => AF C1 in bytes)
-RESP_SYNC = b"\xAF\xC1"
+from steeringControl import SteeringControl
+from drive import DriveOpenLoop
+from pixy import PixySPI
+from servoControl import Servo
+from states import Context, Init
 
-# Pixy2 CCC frame is typically 316x208
-FRAME_W = 316
-FRAME_CENTER_X = FRAME_W // 2  # 158
+# -----------------------------
+# START/STOP BUTTON (GPIO4)
+# -----------------------------
+button = Pin(4, Pin.IN, Pin.PULL_UP)
+running = False
+last_btn = 1
 
-def u16le(b0, b1):
-    return b0 | (b1 << 8)
+# -----------------------------
+# HARDWARE SETUP
+# -----------------------------
+steer = SteeringControl(enable_pin=5, left_pins=(6,7), right_pins=(8,9), pwm_freq=1000)
+pixy = PixySPI()
 
-class PixySPI:
-    """
-    Minimal Pixy2 (CCC) SPI reader for MicroPython.
-    Returns blocks as dicts: {sig, x, y, w, h, index, age, err_x}
-    """
-    def __init__(
-        self,
-        spi_id=0,
-        cs_pin=21,
-        sck=18,
-        mosi=19,
-        miso=20,
-        baudrate=500_000,
-        read_len=256,
-        debug=False,
-    ):
-        self.cs = Pin(cs_pin, Pin.OUT, value=1)
-        self.spi = SPI(
-            spi_id,
-            baudrate=baudrate,
-            polarity=1, phase=1,          # mode 3
-            bits=8, firstbit=SPI.MSB,
-            sck=Pin(sck),
-            mosi=Pin(mosi),
-            miso=Pin(miso),
-        )
-        self.read_len = read_len
-        self.debug = debug
+drive = DriveOpenLoop(
+    steering_control=steer,
+    base_pwm=14000,
+    turn_gain_pwm=55,
+    max_pwm=18000,
+    slew_per_sec=45000
+)
 
-    def _req_with_checksum(self, ptype, payload):
-        csum = sum(payload) & 0xFFFF
-        return bytes([
-            0xAE, 0xC1,                  # request sync
-            ptype & 0xFF,
-            len(payload) & 0xFF,
-            csum & 0xFF, (csum >> 8) & 0xFF
-        ]) + payload
+claw_servo = Servo(pwm_pin=14, power_pin=15, us_min=1000, us_max=2000)
+lift_servo = Servo(pwm_pin=1, power_pin=0, us_min=1000, us_max=2000)
 
-    def _send_and_read(self, req):
-        self.cs.value(0)
-        time.sleep_us(50)
-        self.spi.write(req)
-        buf = bytearray(self.read_len)
-        self.spi.readinto(buf, 0x00)
-        self.cs.value(1)
-        return bytes(buf)
+ctx = Context(drive=drive, pixy=pixy, claw_servo=claw_servo, lift_servo=lift_servo)
 
-    def _parse_response(self, data):
-        # Use last sync in buffer (more robust than find)
-        i = data.rfind(RESP_SYNC)
-        if i < 0:
-            raise Exception("No response sync")
+state = Init()
+state.enter(ctx)
 
-        ptype = data[i + 2]
-        length = data[i + 3]
-        csum = u16le(data[i + 4], data[i + 5])
-        payload = data[i + 6 : i + 6 + length]
-
-        if (sum(payload) & 0xFFFF) != csum:
-            raise Exception("Checksum mismatch")
-
-        return ptype, payload
-
-    def get_blocks(self, sigmap=0xFF, max_blocks=10, center_x=FRAME_CENTER_X):
-        # GET_BLOCKS: type=32, resp=33
-        req = self._req_with_checksum(32, bytes([sigmap & 0xFF, max_blocks & 0xFF]))
-        ptype, pl = self._parse_response(self._send_and_read(req))
-
-        if self.debug:
-            print("ptype=%d payload_len=%d" % (ptype, len(pl)))
-
-        if ptype != 33:
-            return []
-
-        blocks = []
-        stride = 14
-        n = len(pl) - (len(pl) % stride)
-
-        for off in range(0, n, stride):
-            sig = u16le(pl[off + 0],  pl[off + 1])
-            x   = u16le(pl[off + 2],  pl[off + 3])
-            y   = u16le(pl[off + 4],  pl[off + 5])
-            w   = u16le(pl[off + 6],  pl[off + 7])
-            h   = u16le(pl[off + 8],  pl[off + 9])
-            idx = u16le(pl[off + 10], pl[off + 11])
-            age = u16le(pl[off + 12], pl[off + 13])
-
-            blocks.append({
-                "sig": sig,
-                "x": x, "y": y, "w": w, "h": h,
-                "index": idx,
-                "age": age,
-                "err_x": x - center_x,     # horizontal error (pixels)
-            })
-
-        return blocks
-
-
-# ---- main loop ----
-
-pixy = PixySPI(debug=False)
-
-SIG_ALL = 0xFF
-# If you want only signature 1, try SIG1 = 0x01 (as you had working before)
-SIG1 = 0x01
+# -----------------------------
+# MAIN LOOP
+# -----------------------------
+TICK_MS = 20
+next_tick = utime.ticks_ms()
 
 while True:
-    try:
-        blocks = pixy.get_blocks(sigmap=SIG_ALL, max_blocks=10)
 
-        if not blocks:
-            print("no blocks")
+    # -----------------------------
+    # BUTTON TOGGLE
+    # -----------------------------
+    btn = button.value()
+
+    if last_btn == 1 and btn == 0:   # falling edge = press
+        running = not running
+
+        if running:
+            print("Robot STARTED")
         else:
-            b = blocks[0]
-            # one clean line you can parse/log
-            print("sig=%d x=%d y=%d w=%d h=%d err_x=%d" %
-                  (b["sig"], b["x"], b["y"], b["w"], b["h"], b["err_x"]))
+            print("Robot STOPPED")
+            ctx.drive.stop()
 
-    except Exception as e:
-        print("ERR:", e)
+        utime.sleep_ms(200)  # debounce
 
-    time.sleep_ms(200)
+    last_btn = btn
+
+    # -----------------------------
+    # STATE MACHINE ONLY IF RUNNING
+    # -----------------------------
+    if not running:
+        utime.sleep_ms(10)
+        continue
+
+    now = utime.ticks_ms()
+
+    if utime.ticks_diff(now, next_tick) < 0:
+        continue
+
+    next_tick = utime.ticks_add(next_tick, TICK_MS)
+
+    ctx.now_ms = now
+    nxt = state.tick(ctx)
+
+    if nxt is not state:
+        state.exit(ctx)
+        nxt.enter(ctx)
+        state = nxt

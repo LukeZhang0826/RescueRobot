@@ -27,6 +27,12 @@ USE_MIN_PWM_BOOST = True
 PWM_MIN_MOVE_L = 5.0
 PWM_MIN_MOVE_R = 5.0
 
+# Turning speed (percent PWM, signed internally)
+TURN_PWM = 25.0        # increase = faster turn (try 25..45)
+TURN_PWM_MIN = 10.0    # minimum to overcome deadzone
+TURN_RAMP_STEP = 2.0   # ramp-up step (bigger = faster ramp)
+TURN_RAMP_INTERVAL_MS = 30
+
 # =========================
 # Encoder constants
 # =========================
@@ -64,3 +70,10 @@ RIGHT_MOTOR_PINS = (6, 7)
 
 PWM_FREQ = 1000
 PWM_MAX_RAW = 65535
+
+
+# =========================
+# Robot physical constants
+# =========================
+WHEEL_RADIUS = 0.01      # meters
+TRACK_WIDTH = 0.092       # distance between wheels (meters)

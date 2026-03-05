@@ -31,10 +31,12 @@ STARTUP_DELAY_S = 1       # Wait before starting motors
 # PI Controller Gains (per-wheel, tune these!)
 # Start with small Kp, Ki=0, then increase
 # Motors are mismatched - separate gains handle differences directly
+BASE_PWM_L = 18.0         # Left motor feedforward (PWM% to hold target RPM, optional)
+BASE_PWM_R = 18.5         # Right motor feedforward (PWM% to hold target RPM, optional)
 Kp_L = 0.23               # Left proportional gain: PWM% change per RPM error
-Ki_L = 0.00               # Left integral gain: PWM% / (RPM*s)
-Kp_R = 0.20               # Right proportional gain: PWM% change per RPM error
-Ki_R = 0.00               # Right integral gain: PWM% / (RPM*s)
+Ki_L = 0.02               # Left integral gain: PWM% / (RPM*s)
+Kp_R = 0.22               # Right proportional gain: PWM% change per RPM error
+Ki_R = 0.02               # Right integral gain: PWM% / (RPM*s)
 
 # Minimum PWM to overcome motor deadzone/friction (optional)
 # Motors won't move below this PWM - helps pure PI startup
@@ -319,12 +321,12 @@ def run_test(motors):
                 # Update integral (with anti-windup clamp)
                 integral_left += error_left * ctrl_dt
                 integral_right += error_right * ctrl_dt
-                integral_left = clamp(integral_left, -100.0, 100.0)
-                integral_right = clamp(integral_right, -100.0, 100.0)
+                integral_left = clamp(integral_left, -800.0, 800.0)
+                integral_right = clamp(integral_right, -800.0, 800.0)
                 
                 # Pure PI control: per-wheel gains, no feedforward
-                pwm_left = (Kp_L * error_left) + (Ki_L * integral_left)
-                pwm_right = (Kp_R * error_right) + (Ki_R * integral_right)
+                pwm_left = BASE_PWM_L + (Kp_L * error_left) + (Ki_L * integral_left)
+                pwm_right = BASE_PWM_R + (Kp_R * error_right) + (Ki_R * integral_right)
                 
                 # Clamp PWM to valid range
                 pwm_left = clamp(pwm_left, 0.0, 100.0)

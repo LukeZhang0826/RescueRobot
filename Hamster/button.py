@@ -6,7 +6,7 @@ class Button:
     def __init__(self, pin_num, pull=Pin.PULL_UP):
         self.pin = Pin(pin_num, Pin.IN, pull)
 
-    def wait_for_press(self, debounce_ms=50):
+    def wait_for_press(self, debounce_ms=1000):
         # active LOW (pull-up), same behavior as your original
         while self.pin.value() == 1:
             utime.sleep_ms(10)

@@ -248,3 +248,85 @@ class BasicMovements:
 
         finally:
             self.stop()
+
+    def move_backward(self, target_counts, base_percent=22.0, timeout_s=5.0, debug=False):
+        """
+        Move the robot backward by a specified number of encoder counts.
+        """
+        target_counts = int(target_counts)
+        if target_counts <= 0:
+            self.stop()
+            return
+
+        base_percent = clamp(base_percent, self.left_rev_min, self.max_percent)
+
+        SYNC_KP = 0.35
+        FINISH_SLOWDOWN = 20
+
+        self.encoders.reset()
+        utime.sleep_ms(20)
+
+        left_done = False
+        right_done = False
+        start_ms = utime.ticks_ms()
+
+        try:
+            while True:
+                now_ms = utime.ticks_ms()
+                elapsed_ms = utime.ticks_diff(now_ms, start_ms)
+                if elapsed_ms >= int(timeout_s * 1000):
+                    if debug:
+                        print("move_backward timeout")
+                    break
+
+                left_counts, right_counts = self._read_wheels()
+
+                if (not left_done) and (abs(left_counts) >= target_counts):
+                    left_done = True
+                    if debug:
+                        print("Left reached target")
+
+                if (not right_done) and (abs(right_counts) >= target_counts):
+                    right_done = True
+                    if debug:
+                        print("Right reached target")
+
+                if left_done and right_done:
+                    break
+
+                left_remaining = max(0, target_counts - abs(left_counts))
+                right_remaining = max(0, target_counts - abs(right_counts))
+
+                left_base = base_percent
+                right_base = base_percent
+
+                if left_remaining < FINISH_SLOWDOWN:
+                    frac = left_remaining / FINISH_SLOWDOWN
+                    left_base = self.left_rev_min + frac * (base_percent - self.left_rev_min)
+
+                if right_remaining < FINISH_SLOWDOWN:
+                    frac = right_remaining / FINISH_SLOWDOWN
+                    right_base = self.right_rev_min + frac * (base_percent - self.right_rev_min)
+
+                error = left_counts - right_counts
+                correction = SYNC_KP * error
+
+                left_cmd = 0.0 if left_done else -(left_base - correction)
+                right_cmd = 0.0 if right_done else -(right_base + correction)
+
+                if not left_done or not right_done:
+                    left_cmd, right_cmd = self._apply_deadzone(left_cmd, right_cmd)
+
+                self.motors.drive_percent(left_cmd, right_cmd)
+
+                if debug:
+                    print(
+                        "BACK | L={}, R={}, tgt={}, err={}, cmdL={:.1f}, cmdR={:.1f}".format(
+                            left_counts, right_counts, target_counts, error, left_cmd, right_cmd
+                        )
+                    )
+
+                utime.sleep_ms(10)
+
+        finally:
+            self.stop()

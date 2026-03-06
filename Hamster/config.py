@@ -77,3 +77,39 @@ PWM_MAX_RAW = 65535
 # =========================
 WHEEL_RADIUS = 0.01      # meters
 TRACK_WIDTH = 0.092       # distance between wheels (meters)
+
+
+# =========================
+# Pixy2 Camera (SPI)
+# =========================
+PIXY_SPI_ID = 0
+PIXY_CS_PIN = 21
+PIXY_SCK_PIN = 18
+PIXY_MOSI_PIN = 19
+PIXY_MISO_PIN = 20
+PIXY_BAUDRATE = 500_000
+
+# Camera frame
+PIXY_FRAME_WIDTH = 316
+PIXY_CENTER_X = PIXY_FRAME_WIDTH // 2  # 158
+
+# Detection
+PIXY_AREA_MIN = 2000     # Minimum block area to consider valid
+PIXY_SIGMAP = 0xFF       # All signatures (default)
+
+
+# =========================
+# Line Follower (Outer PD Loop)
+# =========================
+LINE_FOLLOW_DURATION_S = 9.0    # How long to run (seconds)
+
+LINE_FOLLOW_BASE_RPM = 120.0     # Forward speed when centered
+LINE_FOLLOW_MAX_RPM = 300.0      # Maximum wheel RPM
+LINE_FOLLOW_MAX_TURN_RPM = 50.0 # Maximum turn differential
+
+# PD gains for steering
+Kp_STEER = 0.05           # RPM per pixel error
+Kd_STEER = 0.01          # Derivative gain (dampen oscillations)
+
+LINE_FOLLOW_STEER_SIGN = +1      # +1 or -1 to flip turn direction
+LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)

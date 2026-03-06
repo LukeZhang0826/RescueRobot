@@ -57,6 +57,10 @@ def main():
             mover.turn_right_counts(80, base_percent=22.0, debug=True)
             utime.sleep_ms(500)
 
+            print("Running move_backward(100)")
+            mover.move_backward(100, base_percent=18.0, debug=True)
+            utime.sleep_ms(500)
+
             print("Done\n")
 
     finally:

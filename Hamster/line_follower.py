@@ -104,6 +104,15 @@ class LineFollower:
                         # Apply deadband
                         if abs(error_px) <= cfg.LINE_FOLLOW_DEADBAND_PX:
                             error_px = 0
+
+                        # error_magnitude = abs(error_px)
+                        # if error_magnitude > cfg.LINE_FOLLOW_SLOWDOWN_THRESHOLD:
+                        #     base_rpm = cfg.LINE_FOLLOW_BASE_RPM * (
+                        #         1.0 - cfg.LINE_FOLLOW_SLOWDOWN_FACTOR * (error_magnitude / cfg.PIXY_CENTER_X)
+                        #     )
+                        #     base_rpm = max(base_rpm, cfg.LINE_FOLLOW_MIN_RPM)  # Ensure minimum speed
+                        # else:
+                        #     base_rpm = cfg.LINE_FOLLOW_BASE_RPM
                         
                         # PD control: compute turn differential (in RPM)
                         error_derivative = (error_px - last_error_px) / outer_dt

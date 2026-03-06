@@ -101,15 +101,19 @@ PIXY_SIGMAP = 0xFF       # All signatures (default)
 # =========================
 # Line Follower (Outer PD Loop)
 # =========================
-LINE_FOLLOW_DURATION_S = 9.0    # How long to run (seconds)
+LINE_FOLLOW_DURATION_S = 25.5    # How long to run (seconds)
 
-LINE_FOLLOW_BASE_RPM = 120.0     # Forward speed when centered
+LINE_FOLLOW_BASE_RPM = 150.0     # Forward speed when centered
 LINE_FOLLOW_MAX_RPM = 300.0      # Maximum wheel RPM
-LINE_FOLLOW_MAX_TURN_RPM = 50.0 # Maximum turn differential
+LINE_FOLLOW_MAX_TURN_RPM = 60.0 # Maximum turn differential
 
 # PD gains for steering
-Kp_STEER = 0.05           # RPM per pixel error
-Kd_STEER = 0.01          # Derivative gain (dampen oscillations)
+Kp_STEER = 0.30           # RPM per pixel error
+Kd_STEER = 0.15          # Derivative gain (dampen oscillations)
 
 LINE_FOLLOW_STEER_SIGN = +1      # +1 or -1 to flip turn direction
 LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
+
+# Slowdown threshold for sharp turns
+LINE_FOLLOW_SLOWDOWN_THRESHOLD = 50  # Pixel error threshold to reduce speed
+LINE_FOLLOW_SLOWDOWN_FACTOR = 0.5

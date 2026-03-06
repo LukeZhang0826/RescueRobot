@@ -1,154 +1,250 @@
 # basic_movements.py
 import utime
-import math
-from utils import clamp
+
+
+def clamp(x, lo, hi):
+    if x < lo:
+        return lo
+    if x > hi:
+        return hi
+    return x
 
 
 class BasicMovements:
-    def __init__(self, motors, encoders, cfg):
+    """
+    Basic robot movement primitives using encoder counts.
+
+    Assumptions:
+      - left wheel progress comes from encB
+      - right wheel progress comes from encA
+
+    Motor commands use signed percent:
+      + = forward
+      - = reverse
+    """
+
+    def __init__(
+        self,
+        motors,
+        encoders,
+        max_percent=35.0,
+        left_fwd_min=16.0,
+        left_rev_min=22.0,
+        right_fwd_min=16.0,
+        right_rev_min=22.0,
+    ):
         self.motors = motors
         self.encoders = encoders
-        self.cfg = cfg
 
-    # ---------- small utility ----------
-    def pause(self, seconds=0.25):
-        """Stop motors and wait. Use between movements."""
+        self.max_percent = max_percent
+
+        self.left_fwd_min = left_fwd_min
+        self.left_rev_min = left_rev_min
+        self.right_fwd_min = right_fwd_min
+        self.right_rev_min = right_rev_min
+
+    def stop(self):
         self.motors.stop()
-        utime.sleep(seconds)
 
-    # ---------- move forward ----------
-    def move_forward_distance(self, distance_m):
+    def _read_wheels(self):
+        encA, encB = self.encoders.read_counts()
+        left_counts = encB
+        right_counts = encA
+        return left_counts, right_counts
+
+    def _apply_deadzone(self, left_cmd, right_cmd):
         """
-        Move forward a specific distance in meters using encoder feedback.
+        Enforce different minimum magnitudes depending on wheel + direction.
         """
+        # Left
+        if left_cmd > 0:
+            left_cmd = max(left_cmd, self.left_fwd_min)
+        elif left_cmd < 0:
+            left_cmd = -max(abs(left_cmd), self.left_rev_min)
 
-        cfg = self.cfg
+        # Right
+        if right_cmd > 0:
+            right_cmd = max(right_cmd, self.right_fwd_min)
+        elif right_cmd < 0:
+            right_cmd = -max(abs(right_cmd), self.right_rev_min)
 
-        # convert distance → encoder counts
-        wheel_rotations = distance_m / (2 * math.pi * cfg.WHEEL_RADIUS)
-        target_counts = int(wheel_rotations * cfg.COUNTS_PER_REV)
+        left_cmd = clamp(left_cmd, -self.max_percent, self.max_percent)
+        right_cmd = clamp(right_cmd, -self.max_percent, self.max_percent)
 
-        pwm_left = 0.0
-        pwm_right = 0.0
+        return left_cmd, right_cmd
 
-        integral_left = 0.0
-        integral_right = 0.0
+    def move_forward(self, target_counts, base_percent=22.0, timeout_s=5.0, debug=False):
+        target_counts = int(target_counts)
+        if target_counts <= 0:
+            self.stop()
+            return
 
-        rpm_left_filtered = 0.0
-        rpm_right_filtered = 0.0
+        base_percent = clamp(base_percent, self.left_fwd_min, self.max_percent)
+
+        SYNC_KP = 0.35
+        FINISH_SLOWDOWN = 20
 
         self.encoders.reset()
+        utime.sleep_ms(20)
 
-        last_ctrl_ms = utime.ticks_ms()
-        last_encA, last_encB = self.encoders.read_counts()
-
-        try:
-
-            while True:
-
-                encA, encB = self.encoders.read_counts()
-
-                # same mapping as before
-                left_counts = abs(encB)
-                right_counts = abs(encA)
-
-                # stop when both wheels reach distance
-                if left_counts >= target_counts and right_counts >= target_counts:
-                    break
-
-                now = utime.ticks_ms()
-                dt_ms = utime.ticks_diff(now, last_ctrl_ms)
-
-                if dt_ms >= cfg.CTRL_INTERVAL_MS:
-
-                    dt = dt_ms / 1000.0
-                    last_ctrl_ms = now
-
-                    dA = encA - last_encA
-                    dB = encB - last_encB
-
-                    last_encA = encA
-                    last_encB = encB
-
-                    cps_left = dB / dt
-                    cps_right = dA / dt
-
-                    rpm_left_raw = cps_left * cfg.CPS_TO_RPM
-                    rpm_right_raw = cps_right * cfg.CPS_TO_RPM
-
-                    rpm_left_filtered += cfg.SPEED_FILTER_ALPHA * (rpm_left_raw - rpm_left_filtered)
-                    rpm_right_filtered += cfg.SPEED_FILTER_ALPHA * (rpm_right_raw - rpm_right_filtered)
-
-                    err_l = cfg.TARGET_RPM - rpm_left_filtered
-                    err_r = cfg.TARGET_RPM - rpm_right_filtered
-
-                    integral_left = clamp(integral_left + err_l * dt, -100.0, 100.0)
-                    integral_right = clamp(integral_right + err_r * dt, -100.0, 100.0)
-
-                    pwm_left = (cfg.Kp_L * err_l) + (cfg.Ki_L * integral_left)
-                    pwm_right = (cfg.Kp_R * err_r) + (cfg.Ki_R * integral_right)
-
-                    pwm_left = clamp(pwm_left, 0.0, 100.0)
-                    pwm_right = clamp(pwm_right, 0.0, 100.0)
-
-                    if cfg.USE_MIN_PWM_BOOST and cfg.TARGET_RPM > 0:
-
-                        if 0 < pwm_left < cfg.PWM_MIN_MOVE_L:
-                            pwm_left = cfg.PWM_MIN_MOVE_L
-
-                        if 0 < pwm_right < cfg.PWM_MIN_MOVE_R:
-                            pwm_right = cfg.PWM_MIN_MOVE_R
-
-                    self.motors.drive_percent(pwm_left, pwm_right)
-
-                utime.sleep_ms(5)
-
-        finally:
-            self.motors.stop()
-
-    # ---------- turn in place ----------
-    def turn_degrees(self, degrees, pause_after_s=0.2):
-        cfg = self.cfg
-
-        theta = math.radians(abs(degrees))
-        wheel_travel = (cfg.TRACK_WIDTH / 2.0) * theta
-        wheel_rotations = wheel_travel / (2.0 * math.pi * cfg.WHEEL_RADIUS)
-        target_counts = int(wheel_rotations * cfg.COUNTS_PER_REV)
-
-        # use config values
-        TURN_PWM = cfg.TURN_PWM
-        TURN_PWM_MIN = cfg.TURN_PWM_MIN
-        RAMP_STEP = cfg.TURN_RAMP_STEP
-        RAMP_INTERVAL_MS = cfg.TURN_RAMP_INTERVAL_MS
-
-        self.encoders.reset()
-
-        if degrees >= 0:
-            sign_l, sign_r = -1, +1
-        else:
-            sign_l, sign_r = +1, -1
-
-        pwm = TURN_PWM_MIN
-        last_ramp_ms = utime.ticks_ms()
+        left_done = False
+        right_done = False
+        start_ms = utime.ticks_ms()
 
         try:
             while True:
-                encA, encB = self.encoders.read_counts()
-                left_counts = abs(encB)   # same mapping
-                right_counts = abs(encA)
-
-                if left_counts >= target_counts and right_counts >= target_counts:
+                now_ms = utime.ticks_ms()
+                elapsed_ms = utime.ticks_diff(now_ms, start_ms)
+                if elapsed_ms >= int(timeout_s * 1000):
+                    if debug:
+                        print("move_forward timeout")
                     break
 
-                now = utime.ticks_ms()
-                if utime.ticks_diff(now, last_ramp_ms) >= RAMP_INTERVAL_MS:
-                    last_ramp_ms = now
-                    pwm = min(TURN_PWM, pwm + RAMP_STEP)
+                left_counts, right_counts = self._read_wheels()
 
-                self.motors.drive_percent(sign_l * pwm, sign_r * pwm)
+                if (not left_done) and (left_counts >= target_counts):
+                    left_done = True
+                    if debug:
+                        print("Left reached target")
+
+                if (not right_done) and (right_counts >= target_counts):
+                    right_done = True
+                    if debug:
+                        print("Right reached target")
+
+                if left_done and right_done:
+                    break
+
+                left_remaining = max(0, target_counts - left_counts)
+                right_remaining = max(0, target_counts - right_counts)
+
+                left_base = base_percent
+                right_base = base_percent
+
+                if left_remaining < FINISH_SLOWDOWN:
+                    frac = left_remaining / FINISH_SLOWDOWN
+                    left_base = self.left_fwd_min + frac * (base_percent - self.left_fwd_min)
+
+                if right_remaining < FINISH_SLOWDOWN:
+                    frac = right_remaining / FINISH_SLOWDOWN
+                    right_base = self.right_fwd_min + frac * (base_percent - self.right_fwd_min)
+
+                error = left_counts - right_counts
+                correction = SYNC_KP * error
+
+                left_cmd = 0.0 if left_done else (left_base - correction)
+                right_cmd = 0.0 if right_done else (right_base + correction)
+
+                if not left_done or not right_done:
+                    left_cmd, right_cmd = self._apply_deadzone(left_cmd, right_cmd)
+
+                self.motors.drive_percent(left_cmd, right_cmd)
+
+                if debug:
+                    print(
+                        "FWD | L={}, R={}, tgt={}, err={}, cmdL={:.1f}, cmdR={:.1f}".format(
+                            left_counts, right_counts, target_counts, error, left_cmd, right_cmd
+                        )
+                    )
+
                 utime.sleep_ms(10)
 
         finally:
-            self.motors.stop()
-            if pause_after_s and pause_after_s > 0:
-                utime.sleep(pause_after_s)
+            self.stop()
+
+    def turn_left_counts(self, target_counts, base_percent=20.0, timeout_s=5.0, debug=False):
+        self._turn_in_place(
+            target_counts=target_counts,
+            left_sign=-1.0,
+            right_sign=+1.0,
+            base_percent=base_percent,
+            timeout_s=timeout_s,
+            debug=debug,
+            label="LEFT"
+        )
+
+    def turn_right_counts(self, target_counts, base_percent=20.0, timeout_s=5.0, debug=False):
+        self._turn_in_place(
+            target_counts=target_counts,
+            left_sign=+1.0,
+            right_sign=-1.0,
+            base_percent=base_percent,
+            timeout_s=timeout_s,
+            debug=debug,
+            label="RIGHT"
+        )
+
+    def _turn_in_place(self, target_counts, left_sign, right_sign, base_percent, timeout_s, debug, label):
+        target_counts = int(target_counts)
+        if target_counts <= 0:
+            self.stop()
+            return
+
+        base_percent = clamp(base_percent, 16.0, self.max_percent)
+
+        TURN_SYNC_KP = 0.30
+        FINISH_SLOWDOWN = 20
+
+        self.encoders.reset()
+        utime.sleep_ms(20)
+
+        start_ms = utime.ticks_ms()
+
+        try:
+            while True:
+                now_ms = utime.ticks_ms()
+                elapsed_ms = utime.ticks_diff(now_ms, start_ms)
+                if elapsed_ms >= int(timeout_s * 1000):
+                    if debug:
+                        print("turn_{} timeout".format(label.lower()))
+                    break
+
+                left_counts, right_counts = self._read_wheels()
+
+                left_mag = abs(left_counts)
+                right_mag = abs(right_counts)
+
+                progress = (left_mag + right_mag) / 2.0
+                if progress >= target_counts:
+                    break
+
+                remaining = max(0.0, target_counts - progress)
+
+                turn_base = base_percent
+                if remaining < FINISH_SLOWDOWN:
+                    frac = remaining / FINISH_SLOWDOWN
+                    turn_base = 16.0 + frac * (base_percent - 16.0)
+
+                error = left_mag - right_mag
+                correction = TURN_SYNC_KP * error
+
+                left_mag_cmd = turn_base - correction
+                right_mag_cmd = turn_base + correction
+
+                left_cmd = left_sign * left_mag_cmd
+                right_cmd = right_sign * right_mag_cmd
+
+                left_cmd, right_cmd = self._apply_deadzone(left_cmd, right_cmd)
+
+                self.motors.drive_percent(left_cmd, right_cmd)
+
+                if debug:
+                    print(
+                        "TURN_{} | L={}, R={}, Lmag={}, Rmag={}, prog={:.1f}/{}, err={}, cmdL={:.1f}, cmdR={:.1f}".format(
+                            label,
+                            left_counts,
+                            right_counts,
+                            left_mag,
+                            right_mag,
+                            progress,
+                            target_counts,
+                            error,
+                            left_cmd,
+                            right_cmd
+                        )
+                    )
+
+                utime.sleep_ms(10)
+
+        finally:
+            self.stop()

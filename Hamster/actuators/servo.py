@@ -39,11 +39,11 @@ US_MAX = 2100
 # -----------------------------
 # CALIBRATED "ANGLES"
 # -----------------------------
-CLAW_OPEN = 80
-CLAW_CLOSED = -50
+CLAW_OPEN = 60
+CLAW_CLOSED = -60
 
-LIFT_DOWN = -80
-LIFT_UP = 70
+LIFT_DOWN = -70
+LIFT_UP = 50
 
 # -----------------------------
 # TIMING (ms)

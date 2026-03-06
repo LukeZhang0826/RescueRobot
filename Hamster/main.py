@@ -4,6 +4,8 @@ from motors import Motors
 from encoders import DualEncoder
 from basic_movements import BasicMovements
 from button import Button
+from pixy import PixySPI
+from line_follower import LineFollower
 
 
 def main():
@@ -27,29 +29,30 @@ def main():
 
     button = Button(cfg.BUTTON_PIN)
 
-    movement = BasicMovements(motors, encoders, cfg)
+    pixy = PixySPI(
+        cfg.PIXY_SPI_ID,
+        cfg.PIXY_CS_PIN,
+        cfg.PIXY_SCK_PIN,
+        cfg.PIXY_MOSI_PIN,
+        cfg.PIXY_MISO_PIN,
+        cfg.PIXY_BAUDRATE
+    )
+
+    #movement = BasicMovements(motors, encoders, cfg)
+    follower = LineFollower(motors, encoders, pixy, cfg)
 
     print("Robot ready")
-    print("Press button to run movement sequence")
+    print("Press button to start line following")
+    print(f"Duration: {cfg.LINE_FOLLOW_DURATION_S}s")
 
     while True:
 
         button.wait_for_press()
 
-        print("Running sequence")
-        
-        movement.pause(0.5)
+        print("Starting line follower...")
+        follower.run()
 
-        movement.move_forward_distance(0.1) 
-        movement.pause(0.5)
-
-        # movement.turn_degrees(90)
-        # movement.pause(0.5)
-
-        movement.move_forward_distance(0.1) 
-
-        print("Sequence finished")
-        print("Press button to run again")
+        print("Done. Press button to run again")
 
 
 if __name__ == "__main__":

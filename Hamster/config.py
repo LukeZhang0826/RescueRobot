@@ -65,7 +65,7 @@ ENC_INV_B = -1
 MOTOR_EN_PIN = 5
 # NOTE: this keeps your original mapping:
 # left = (8,9), right=(6,7)
-LEFT_MOTOR_PINS = (8, 9)
+LEFT_MOTOR_PINS = (11, 9)
 RIGHT_MOTOR_PINS = (6, 7)
 
 PWM_FREQ = 1000
@@ -101,19 +101,21 @@ PIXY_SIGMAP = 0xFF       # All signatures (default)
 # =========================
 # Line Follower (Outer PD Loop)
 # =========================
-LINE_FOLLOW_DURATION_S = 25.5    # How long to run (seconds)
+LINE_FOLLOW_DURATION_S = 10    # How long to run (seconds)
 
 LINE_FOLLOW_BASE_RPM = 150.0     # Forward speed when centered
-LINE_FOLLOW_MAX_RPM = 300.0      # Maximum wheel RPM
-LINE_FOLLOW_MAX_TURN_RPM = 60.0 # Maximum turn differential
+
+LINE_FOLLOW_MAX_RPM = 400.0      # Maximum wheel RPM
+LINE_FOLLOW_MIN_RPM = 40.0       # Absolute floor speed to prevent stalling
+
+LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 200.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
+
+LINE_FOLLOW_TALL_BLOCK_H = 80   # If block height exceeds this, it's "too much" of the line
+LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE = 0.65  # Scale down error when seeing "too much" of the line to prevent overreacting
 
 # PD gains for steering
 Kp_STEER = 0.30           # RPM per pixel error
-Kd_STEER = 0.15          # Derivative gain (dampen oscillations)
+Kd_STEER = 0.3            # Derivative gain (dampen oscillations)
 
 LINE_FOLLOW_STEER_SIGN = +1      # +1 or -1 to flip turn direction
 LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
-
-# Slowdown threshold for sharp turns
-LINE_FOLLOW_SLOWDOWN_THRESHOLD = 50  # Pixel error threshold to reduce speed
-LINE_FOLLOW_SLOWDOWN_FACTOR = 0.5

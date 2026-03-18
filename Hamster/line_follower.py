@@ -25,14 +25,14 @@ class LineFollower:
         """
         Run line following for cfg.LINE_FOLLOW_DURATION_S seconds.
         
-        Outer PD loop runs at 20Hz (50ms interval).
+        Outer PD loop runs at 50Hz (20ms interval).
         Inner PI loop runs at 50Hz (20ms interval).
         """
         cfg = self.cfg
         
         # Timing intervals
-        OUTER_INTERVAL_MS = 50   # 20Hz for camera/PD
-        INNER_INTERVAL_MS = 20   # 50Hz for motor PI
+        OUTER_INTERVAL_MS = 20   # 50Hz for camera/PD (20/1000 = 50Hz)
+        INNER_INTERVAL_MS = 20   # 50Hz for motor PI  (20/1000 = 50Hz)
         
         # Inner loop PI state
         integral_left = 0.0
@@ -77,7 +77,7 @@ class LineFollower:
                     break
                 
                 # =============================================================
-                # OUTER LOOP: Camera PD (20Hz)
+                # OUTER LOOP: Camera PD (50Hz)
                 # =============================================================
                 outer_dt_ms = utime.ticks_diff(now, last_outer_ms)
                 if outer_dt_ms >= OUTER_INTERVAL_MS:
@@ -105,35 +105,30 @@ class LineFollower:
                         if abs(error_px) <= cfg.LINE_FOLLOW_DEADBAND_PX:
                             error_px = 0
 
-                        # error_magnitude = abs(error_px)
-                        # if error_magnitude > cfg.LINE_FOLLOW_SLOWDOWN_THRESHOLD:
-                        #     base_rpm = cfg.LINE_FOLLOW_BASE_RPM * (
-                        #         1.0 - cfg.LINE_FOLLOW_SLOWDOWN_FACTOR * (error_magnitude / cfg.PIXY_CENTER_X)
-                        #     )
-                        #     base_rpm = max(base_rpm, cfg.LINE_FOLLOW_MIN_RPM)  # Ensure minimum speed
-                        # else:
-                        #     base_rpm = cfg.LINE_FOLLOW_BASE_RPM
-                        
+                        # if the block is very tall, it means it's seeing 'too much" of the line, which can cause erratic behavior. In this case, we can scale down the error to prevent overreacting.
+                        if block["h"] >= cfg.LINE_FOLLOW_TALL_BLOCK_H:
+                            error_px *= cfg.LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE
+
                         # PD control: compute turn differential (in RPM)
                         error_derivative = (error_px - last_error_px) / outer_dt
                         last_error_px = error_px
                         
-                        turn_rpm = cfg.LINE_FOLLOW_STEER_SIGN * (
+                        turn_rpm_differential = cfg.LINE_FOLLOW_STEER_SIGN * (
                             cfg.Kp_STEER * error_px +
                             cfg.Kd_STEER * error_derivative
                         )
                         
                         # Clamp turn differential
-                        turn_rpm = clamp(turn_rpm, -cfg.LINE_FOLLOW_MAX_TURN_RPM, cfg.LINE_FOLLOW_MAX_TURN_RPM)
+                        turn_rpm_differential = clamp(turn_rpm_differential, -cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM, cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM)
                         
                         # Differential drive: base speed +/- turn
                         # Positive error (line right) -> turn right -> left faster, right slower
-                        target_rpm_left = cfg.LINE_FOLLOW_BASE_RPM + turn_rpm
-                        target_rpm_right = cfg.LINE_FOLLOW_BASE_RPM - turn_rpm
+                        target_rpm_left = cfg.LINE_FOLLOW_BASE_RPM + turn_rpm_differential
+                        target_rpm_right = cfg.LINE_FOLLOW_BASE_RPM - turn_rpm_differential
                         
                         # Clamp targets to valid range (no reverse)
-                        target_rpm_left = clamp(target_rpm_left, 0.0, cfg.LINE_FOLLOW_MAX_RPM)
-                        target_rpm_right = clamp(target_rpm_right, 0.0, cfg.LINE_FOLLOW_MAX_RPM)
+                        target_rpm_left = clamp(target_rpm_left, -cfg.LINE_FOLLOW_MAX_RPM, cfg.LINE_FOLLOW_MAX_RPM)
+                        target_rpm_right = clamp(target_rpm_right, -cfg.LINE_FOLLOW_MAX_RPM, cfg.LINE_FOLLOW_MAX_RPM)
                 
                 # =============================================================
                 # INNER LOOP: Motor PI (50Hz)
@@ -179,8 +174,8 @@ class LineFollower:
                     pwm_right = (cfg.Kp_R * error_right) + (cfg.Ki_R * integral_right)
                     
                     # Clamp PWM
-                    pwm_left = clamp(pwm_left, 0.0, 100.0)
-                    pwm_right = clamp(pwm_right, 0.0, 100.0)
+                    pwm_left = clamp(pwm_left, -100.0, 100.0)
+                    pwm_right = clamp(pwm_right, -100.0, 100.0)
                     
                     # Minimum PWM boost for deadzone
                     if cfg.USE_MIN_PWM_BOOST:

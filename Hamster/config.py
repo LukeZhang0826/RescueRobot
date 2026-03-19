@@ -95,8 +95,14 @@ PIXY_CENTER_X = PIXY_FRAME_WIDTH // 2  # 158
 
 # Detection
 PIXY_AREA_MIN = 2000     # Minimum block area to consider valid
-PIXY_SIGMAP = 0xFF       # All signatures (default)
-
+PIXY_SIGNATURE_1 = 0x01  # Red Line
+PIXY_SIGNATURE_2 = 0x02
+PIXY_SIGNATURE_3 = 0x04
+PIXY_SIGNATURE_4 = 0x08
+PIXY_SIGNATURE_5 = 0x10
+PIXY_SIGNATURE_6 = 0x20
+PIXY_SIGNATURE_7 = 0x40   # Safe Zones (Green Lines)
+PIXY_SIGNATURE_ALL = 0xFF # All signatures (for get_blocks sigmap)
 
 # =========================
 # Line Follower (Outer PD Loop)

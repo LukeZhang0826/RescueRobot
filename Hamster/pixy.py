@@ -36,15 +36,11 @@ class PixySPI:
         )
         self.read_len = read_len
 
-    def _req_with_checksum(self, ptype, payload):
-        """Build request packet with checksum."""
-        csum = sum(payload) & 0xFFFF
+    def _build_req(self, ptype, payload=b""):
         return bytes([
             0xAE, 0xC1,
             ptype & 0xFF,
-            len(payload) & 0xFF,
-            csum & 0xFF,
-            (csum >> 8) & 0xFF
+            len(payload) & 0xFF
         ]) + payload
 
     def _send_and_read(self, req):
@@ -74,32 +70,27 @@ class PixySPI:
         return ptype, payload
 
     def get_blocks(self, sigmap=0xFF, max_blocks=10):
-        """
-        Get detected color blocks.
-        
-        Args:
-            sigmap: Signature bitmap (0xFF = all signatures)
-            max_blocks: Maximum blocks to return
-            
-        Returns:
-            List of block dicts: {sig, x, y, w, h, area}
-        """
-        req = self._req_with_checksum(32, bytes([sigmap & 0xFF, max_blocks & 0xFF]))
+        payload = bytes([
+            sigmap & 0xFF,
+            max_blocks & 0xFF
+        ])
+        req = self._build_req(32, payload)
         ptype, payload = self._parse_response(self._send_and_read(req))
-        
+
         if ptype != 33:
             return []
-        
+
         blocks = []
         stride = 14
         n = len(payload) - (len(payload) % stride)
-        
+
         for off in range(0, n, stride):
             sig = _u16le(payload[off + 0], payload[off + 1])
             x   = _u16le(payload[off + 2], payload[off + 3])
             y   = _u16le(payload[off + 4], payload[off + 5])
             w   = _u16le(payload[off + 6], payload[off + 7])
             h   = _u16le(payload[off + 8], payload[off + 9])
+
             blocks.append({
                 "sig": sig,
                 "x": x,
@@ -108,9 +99,9 @@ class PixySPI:
                 "h": h,
                 "area": w * h
             })
-        
-        return blocks
 
+        return blocks
+    
     def best_block(self, sigmap=0xFF, area_min= 500):
         """
         Get the largest block above minimum area threshold.

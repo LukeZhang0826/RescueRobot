@@ -86,7 +86,7 @@ class LineFollower:
                     
                     # Get camera reading
                     block = self.pixy.best_block(
-                        sigmap=cfg.PIXY_SIGMAP,
+                        sigmap=cfg.PIXY_SIGNATURE_1,
                         area_min=cfg.PIXY_AREA_MIN
                     )
                     

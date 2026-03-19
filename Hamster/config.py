@@ -91,13 +91,15 @@ PIXY_BAUDRATE = 500_000
 
 # Camera frame
 PIXY_FRAME_WIDTH = 316
+PIXY_FRAME_HEIGHT = 208
+PIXY_FRAME_AREA = PIXY_FRAME_WIDTH * PIXY_FRAME_HEIGHT
 PIXY_CENTER_X = PIXY_FRAME_WIDTH // 2  # 158
 
 # Detection
 PIXY_AREA_MIN = 2000     # Minimum block area to consider valid
 PIXY_SIGNATURE_1 = 0x01  # Red Line
 PIXY_SIGNATURE_2 = 0x02
-PIXY_SIGNATURE_3 = 0x04
+PIXY_SIGNATURE_3 = 0x04  # Blue Line
 PIXY_SIGNATURE_4 = 0x08
 PIXY_SIGNATURE_5 = 0x10
 PIXY_SIGNATURE_6 = 0x20
@@ -125,3 +127,54 @@ Kd_STEER = 0.3            # Derivative gain (dampen oscillations)
 
 LINE_FOLLOW_STEER_SIGN = +1      # +1 or -1 to flip turn direction
 LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
+
+
+# =========================
+# Green Target Approach
+# =========================
+TARGET_AREA_MIN = 200   # Minimum area for valid target block
+
+TARGET_X = 158            # desired blob x in image
+TARGET_Y = 180            # desired blob y in image
+
+TARGET_DEADBAND_X = 10           # pixels
+TARGET_DEADBAND_Y = 10           # pixels
+
+TARGET_SEARCH_TURN_COUNTS = 12   # tiny search nudge
+TARGET_SEARCH_TURN_PERCENT = 16.0
+
+TARGET_TURN_COUNTS_SMALL = 4
+TARGET_TURN_COUNTS_MED = 7
+TARGET_TURN_COUNTS_LARGE = 12
+TARGET_TURN_PERCENT = 16.0
+
+TARGET_MOVE_COUNTS_SMALL = 8
+TARGET_MOVE_COUNTS_MED = 12
+TARGET_MOVE_COUNTS_LARGE = 14
+TARGET_MOVE_PERCENT = 16.0
+
+TARGET_APPROACH_MAX_STEPS = 40   # safety cap
+TARGET_SETTLE_MS = 120           # pause after each primitive
+TARGET_DEBUG = True
+
+# =========================
+# Basic movement tuning
+# =========================
+BASIC_MAX_PERCENT = 35.0
+
+LEFT_FWD_MIN = 16.0
+LEFT_REV_MIN = 22.0
+RIGHT_FWD_MIN = 16.0
+RIGHT_REV_MIN = 22.0
+
+# =========================
+# Blue tape stop logic
+# =========================
+PIXY_SIGNATURE_BLUE = PIXY_SIGNATURE_3   # change if your blue tape is actually a different signature
+
+BLUE_STOP_SLOW_COVERAGE = 0.05      # start slowing when blue is ~22% of frame
+BLUE_STOP_FULL_COVERAGE = 0.30      # stop when blue is ~38% of frame
+BLUE_STOP_CONFIRM_FRAMES = 3        # require full condition this many frames
+
+BLUE_COVERAGE_FILTER_ALPHA = 0.35   # low-pass filter for noisy blob size
+LINE_FOLLOW_SLOW_MIN_RPM = 55.0     # minimum forward RPM while slowing

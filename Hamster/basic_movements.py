@@ -1,4 +1,3 @@
-# basic_movements.py
 import utime
 from utils import clamp
 
@@ -16,25 +15,17 @@ class BasicMovements:
       - = reverse
     """
 
-    def __init__(
-        self,
-        motors,
-        encoders,
-        max_percent=35.0,
-        left_fwd_min=16.0,
-        left_rev_min=22.0,
-        right_fwd_min=16.0,
-        right_rev_min=22.0,
-    ):
+    def __init__(self, motors, encoders, cfg):
         self.motors = motors
         self.encoders = encoders
+        self.cfg = cfg
 
-        self.max_percent = max_percent
+        self.max_percent = cfg.BASIC_MAX_PERCENT
 
-        self.left_fwd_min = left_fwd_min
-        self.left_rev_min = left_rev_min
-        self.right_fwd_min = right_fwd_min
-        self.right_rev_min = right_rev_min
+        self.left_fwd_min = cfg.LEFT_FWD_MIN
+        self.left_rev_min = cfg.LEFT_REV_MIN
+        self.right_fwd_min = cfg.RIGHT_FWD_MIN
+        self.right_rev_min = cfg.RIGHT_REV_MIN
 
     def stop(self):
         self.motors.stop()
@@ -173,7 +164,14 @@ class BasicMovements:
             self.stop()
             return
 
-        base_percent = clamp(base_percent, 16.0, self.max_percent)
+        min_turn_percent = max(
+            self.left_fwd_min,
+            self.left_rev_min,
+            self.right_fwd_min,
+            self.right_rev_min
+        )
+
+        base_percent = clamp(base_percent, min_turn_percent, self.max_percent)
 
         TURN_SYNC_KP = 0.30
         FINISH_SLOWDOWN = 20
@@ -206,7 +204,7 @@ class BasicMovements:
                 turn_base = base_percent
                 if remaining < FINISH_SLOWDOWN:
                     frac = remaining / FINISH_SLOWDOWN
-                    turn_base = 16.0 + frac * (base_percent - 16.0)
+                    turn_base = min_turn_percent + frac * (base_percent - min_turn_percent)
 
                 error = left_mag - right_mag
                 correction = TURN_SYNC_KP * error

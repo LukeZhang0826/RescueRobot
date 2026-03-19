@@ -170,11 +170,7 @@ RIGHT_REV_MIN = 22.0
 # =========================
 # Blue tape stop logic
 # =========================
-PIXY_SIGNATURE_BLUE = PIXY_SIGNATURE_3   # change if your blue tape is actually a different signature
-
-BLUE_STOP_SLOW_COVERAGE = 0.05      # start slowing when blue is ~22% of frame
-BLUE_STOP_FULL_COVERAGE = 0.30      # stop when blue is ~38% of frame
-BLUE_STOP_CONFIRM_FRAMES = 3        # require full condition this many frames
-
-BLUE_COVERAGE_FILTER_ALPHA = 0.35   # low-pass filter for noisy blob size
-LINE_FOLLOW_SLOW_MIN_RPM = 55.0     # minimum forward RPM while slowing
+STOP_TARGET_AREA = 10000  
+STOP_TARGET_AREA_MIN = 1000
+STOP_BRAKE_MS = 150
+STOP_CONFIRM_FRAMES = 5

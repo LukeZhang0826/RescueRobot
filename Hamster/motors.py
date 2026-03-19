@@ -1,4 +1,5 @@
 from machine import Pin, PWM
+import utime
 
 
 class Motors:
@@ -54,11 +55,11 @@ class Motors:
         self._drive_motor(self.r1, self.r2, right_percent)
 
     def coast(self):
-        self.en.value(1)
         self.l1.duty_u16(0)
         self.l2.duty_u16(0)
         self.r1.duty_u16(0)
-        self.r2.duty_u16(0)
+        self.r2.duty_u16(0)        
+        self.en.value(0)
 
     def brake(self):
         self.en.value(1)
@@ -69,9 +70,8 @@ class Motors:
 
     def brake_ms(self, ms=100):
         self.brake()
-        import utime
         utime.sleep_ms(ms)
         self.coast()
 
-    def stop(self):
-        self.brake()
+    def stop(self, brake_ms=100):
+        self.brake_ms(brake_ms)

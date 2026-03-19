@@ -1,20 +1,9 @@
-# line_follower.py
-# Camera-based line following with cascaded control:
-#   - Outer loop: PD control on camera error (20Hz)
-#   - Inner loop: PI speed control per wheel (50Hz)
-
+# search_line_follower.py
 import utime
 from utils import clamp
 
 
-class LineFollower:
-    """
-    Cascaded controller for camera-based line following.
-    
-    Outer loop (PD): Camera pixel error -> target RPM for each wheel
-    Inner loop (PI): RPM error -> PWM commands
-    """
-
+class SearchLineFollower:
     def __init__(self, motors, encoders, pixy, cfg):
         self.motors = motors
         self.encoders = encoders
@@ -22,16 +11,6 @@ class LineFollower:
         self.cfg = cfg
 
     def run(self):
-        """
-        Run line following until timeout or stop target detected.
-        
-        Line follow:
-        - steering from signature 1
-        
-        Stop condition:
-        - signature 3 area >= STOP_TARGET_AREA for STOP_CONFIRM_FRAMES frames
-        - then active brake and exit
-        """
         cfg = self.cfg
 
         OUTER_INTERVAL_MS = 20
@@ -48,10 +27,8 @@ class LineFollower:
         target_rpm_left = 0.0
         target_rpm_right = 0.0
 
-        pwm_left = 0.0
-        pwm_right = 0.0
-
         stop_confirm_count = 0
+        result = "unknown"
 
         self.encoders.reset()
         last_encA, last_encB = self.encoders.read_counts()
@@ -60,9 +37,7 @@ class LineFollower:
         last_outer_ms = start_ms
         last_inner_ms = start_ms
 
-        print("Line follower started")
-        print(f"Duration: {cfg.LINE_FOLLOW_DURATION_S}s")
-        print(f"Base RPM: {cfg.LINE_FOLLOW_BASE_RPM}")
+        print("Search line follower started")
 
         try:
             while True:
@@ -71,52 +46,44 @@ class LineFollower:
 
                 if elapsed_s >= cfg.LINE_FOLLOW_DURATION_S:
                     print("Duration reached - stopping")
+                    result = "timeout"
                     break
 
-                # =============================================================
-                # OUTER LOOP: Camera PD + stop-target detection
-                # =============================================================
                 outer_dt_ms = utime.ticks_diff(now, last_outer_ms)
                 if outer_dt_ms >= OUTER_INTERVAL_MS:
                     outer_dt = outer_dt_ms / 1000.0
                     last_outer_ms = now
 
-                    # ONE Pixy read only
                     blocks = self.pixy.get_blocks(
                         sigmap=cfg.PIXY_SIGNATURE_ALL,
                         max_blocks=10
                     )
 
-                    # Best stop block: signature 3
                     stop_block = self.pixy.best_block_by_sig(
                         blocks,
                         sig=3,
                         area_min=cfg.STOP_TARGET_AREA_MIN
                     )
 
-                    # Best line block: signature 1
                     line_block = self.pixy.best_block_by_sig(
                         blocks,
                         sig=1,
                         area_min=cfg.PIXY_AREA_MIN
                     )
 
-                    # This is causing the robot to move forward jittery, why?
                     if stop_block is not None and stop_block["area"] >= cfg.STOP_TARGET_AREA:
                         stop_confirm_count += 1
-                        print(
-                            "STOP target seen | area={} count={}".format(
-                                stop_block["area"], stop_confirm_count
-                            )
-                        )
+                        print("STOP target seen | area={} count={}".format(
+                            stop_block["area"], stop_confirm_count
+                        ))
                     else:
                         stop_confirm_count = 0
 
                     if stop_confirm_count >= cfg.STOP_CONFIRM_FRAMES:
                         print("STOP target confirmed - braking")
                         self.motors.brake_ms(cfg.STOP_BRAKE_MS)
+                        result = "stop_target"
                         break
-
 
                     if line_block is None:
                         target_rpm_left = 0.0
@@ -150,13 +117,17 @@ class LineFollower:
                         target_rpm_left = cfg.LINE_FOLLOW_BASE_RPM + turn_rpm_differential
                         target_rpm_right = cfg.LINE_FOLLOW_BASE_RPM - turn_rpm_differential
 
-                        # no reverse during line follow
-                        target_rpm_left = clamp(target_rpm_left, -cfg.LINE_FOLLOW_MAX_RPM, cfg.LINE_FOLLOW_MAX_RPM)
-                        target_rpm_right = clamp(target_rpm_right, -cfg.LINE_FOLLOW_MAX_RPM, cfg.LINE_FOLLOW_MAX_RPM)
+                        target_rpm_left = clamp(
+                            target_rpm_left,
+                            -cfg.LINE_FOLLOW_MAX_RPM,
+                            cfg.LINE_FOLLOW_MAX_RPM
+                        )
+                        target_rpm_right = clamp(
+                            target_rpm_right,
+                            -cfg.LINE_FOLLOW_MAX_RPM,
+                            cfg.LINE_FOLLOW_MAX_RPM
+                        )
 
-                # =============================================================
-                # INNER LOOP: Motor PI
-                # =============================================================
                 inner_dt_ms = utime.ticks_diff(now, last_inner_ms)
                 if inner_dt_ms >= INNER_INTERVAL_MS:
                     inner_dt = inner_dt_ms / 1000.0
@@ -210,8 +181,9 @@ class LineFollower:
 
         finally:
             self.motors.coast()
-            print("Line follower stopped")
+            print("Search line follower stopped | result =", result)
+
+        return result
 
     def stop(self):
-        """Immediately stop motors."""
         self.motors.coast()

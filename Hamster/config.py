@@ -174,3 +174,33 @@ STOP_TARGET_AREA = 10000
 STOP_TARGET_AREA_MIN = 1000
 STOP_BRAKE_MS = 150
 STOP_CONFIRM_FRAMES = 5
+
+# =========================
+# Servo / Pickup
+# =========================
+
+# Pins
+CLAW_PWM_PIN = 1
+CLAW_PWR_PIN = 0
+
+LIFT_PWM_PIN = 14
+LIFT_PWR_PIN = 15
+
+# Servo pulse settings
+SERVO_HZ = 50
+SERVO_US_MIN = 900
+SERVO_US_MAX = 2100
+
+# Calibrated pseudo-angles
+CLAW_OPEN = 60
+CLAW_CLOSED = -60
+
+LIFT_DOWN = -70
+LIFT_UP = 50
+
+# Timing (ms)
+SERVO_POWER_ON_DELAY_MS = 250
+T_CLAW_MS = 650
+T_LIFT_MS = 800
+T_SETTLE_MS = 250
+T_HOLD_END_MS = 2000

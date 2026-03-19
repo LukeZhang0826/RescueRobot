@@ -1,4 +1,3 @@
-# motors.py
 from machine import Pin, PWM
 
 
@@ -14,7 +13,6 @@ class Motors:
     """
 
     def __init__(self, en_pin, left_pins, right_pins, pwm_freq=1000, pwm_max_raw=65535):
-
         self.pwm_max_raw = pwm_max_raw
 
         self.en = Pin(en_pin, Pin.OUT)
@@ -31,12 +29,8 @@ class Motors:
 
         self.en.value(0)
 
-    # ------------------------------------------------
-
     def _drive_motor(self, pwmA, pwmB, percent):
-
         percent = max(-100.0, min(100.0, percent))
-
         raw = int(abs(percent) / 100.0 * self.pwm_max_raw)
 
         if percent > 0:
@@ -50,26 +44,34 @@ class Motors:
             pwmB.duty_u16(raw)
 
         else:
+            # coast for zero command
             pwmA.duty_u16(0)
             pwmB.duty_u16(0)
 
-    # ------------------------------------------------
-
     def drive_percent(self, left_percent, right_percent):
-
         self.en.value(1)
-
         self._drive_motor(self.l1, self.l2, left_percent)
         self._drive_motor(self.r1, self.r2, right_percent)
 
-    # ------------------------------------------------
-
-    def stop(self):
-
-        self.en.value(0)
-
+    def coast(self):
+        self.en.value(1)
         self.l1.duty_u16(0)
         self.l2.duty_u16(0)
-
         self.r1.duty_u16(0)
         self.r2.duty_u16(0)
+
+    def brake(self):
+        self.en.value(1)
+        self.l1.duty_u16(self.pwm_max_raw)
+        self.l2.duty_u16(self.pwm_max_raw)
+        self.r1.duty_u16(self.pwm_max_raw)
+        self.r2.duty_u16(self.pwm_max_raw)
+
+    def brake_ms(self, ms=100):
+        self.brake()
+        import utime
+        utime.sleep_ms(ms)
+        self.coast()
+
+    def stop(self):
+        self.brake()

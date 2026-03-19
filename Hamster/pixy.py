@@ -102,17 +102,28 @@ class PixySPI:
 
         return blocks
     
-    def best_block(self, sigmap=0xFF, area_min= 500):
+    def best_block(self, sigmap=0xFF, area_min=500):
         """
-        Get the largest block above minimum area threshold.
-        
-        Returns:
-            Block dict or None if no valid block found.
+        Get the largest block above minimum area threshold
+        from a fresh Pixy read.
         """
         blocks = self.get_blocks(sigmap=sigmap, max_blocks=10)
         blocks = [b for b in blocks if b["area"] >= area_min]
-        
+
         if not blocks:
             return None
-        
+
         return max(blocks, key=lambda b: b["area"])
+    
+    def best_block_by_sig(self, blocks, sig, area_min=500):
+        """
+        From an already-fetched block list, return the largest block
+        matching a specific signature number.
+        Example: sig=1 for signature 1, sig=3 for signature 3.
+        """
+        matches = [b for b in blocks if b["sig"] == sig and b["area"] >= area_min]
+
+        if not matches:
+            return None
+
+        return max(matches, key=lambda b: b["area"])

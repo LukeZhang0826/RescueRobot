@@ -135,7 +135,7 @@ LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
 TARGET_AREA_MIN = 200   # Minimum area for valid target block
 
 TARGET_X = 158            # desired blob x in image
-TARGET_Y = 154            # desired blob y in image
+TARGET_Y = 30            # desired blob y in image
 
 TARGET_DEADBAND_X = 10           # pixels
 TARGET_DEADBAND_Y = 10           # pixels

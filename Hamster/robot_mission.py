@@ -46,7 +46,7 @@ class RobotMission:
                 success = self.target_approach.run()
 
                 if success:
-                    self.state = self.STATE_DONE
+                    self.state = self.STATE_PICKUP
                 else:
                     print("Target approach failed")
                     self.state = self.STATE_ERROR

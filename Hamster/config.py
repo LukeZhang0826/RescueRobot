@@ -107,7 +107,7 @@ PIXY_SIGNATURE_7 = 0x40   # Safe Zones (Green Lines)
 PIXY_SIGNATURE_ALL = 0xFF # All signatures (for get_blocks sigmap)
 
 # =========================
-# Line Follower (Outer PD Loop)
+# Search Line Follower (Outer PD Loop)
 # =========================
 LINE_FOLLOW_DURATION_S = 10    # How long to run (seconds)
 
@@ -130,12 +130,12 @@ LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
 
 
 # =========================
-# Green Target Approach
+# Target Approach
 # =========================
 TARGET_AREA_MIN = 200   # Minimum area for valid target block
 
 TARGET_X = 158            # desired blob x in image
-TARGET_Y = 30            # desired blob y in image
+TARGET_Y = 108            # desired blob y in image, 30 for course, 108 for home
 
 TARGET_DEADBAND_X = 10           # pixels
 TARGET_DEADBAND_Y = 10           # pixels
@@ -168,12 +168,68 @@ RIGHT_FWD_MIN = 16.0
 RIGHT_REV_MIN = 22.0
 
 # =========================
+# End-of-move braking
+# =========================
+BASIC_BRAKE_MS = 80
+TURN_BRAKE_MS = 120
+
+# =========================
+# Turn-around after pickup
+# =========================
+TURN_AROUND_180_COUNTS = 180
+TURN_AROUND_PERCENT = 25.0
+TURN_AROUND_TIMEOUT_S = 3.0
+TURN_AROUND_SETTLE_MS = 250
+TURN_AROUND_DEBUG = True
+
+# =========================
+# Approach safe zone
+# =========================
+TURN_INTO_SAFE_ZONE_COUNTS = 67
+TURN_INTO_SAFE_ZONE_PERCENT = 25.0
+TURN_INTO_SAFE_ZONE_TIMEOUT_S = 3.0
+TURN_INTO_SAFE_ZONE_SETTLE_MS = 250
+TURN_INTO_SAFE_ZONE_DEBUG = True
+
+DRIVE_INTO_SAFE_ZONE_COUNTS = 90
+DRIVE_INTO_SAFE_ZONE_PERCENT = 25.0
+DRIVE_INTO_SAFE_ZONE_TIMEOUT_S = 3.0
+DRIVE_INTO_SAFE_ZONE_SETTLE_MS = 250
+DRIVE_INTO_SAFE_ZONE_DEBUG = True
+
+# ==========================
+# Find line after safe zone dropoff
+# ==========================
+FIND_LINE_TURN_COUNTS = 70
+FIND_LINE_TURN_PERCENT = 25.0
+FIND_LINE_TIMEOUT_S = 3.0
+FIND_LINE_SETTLE_MS = 250
+FIND_LINE_SETTLE_DEBUG = True
+
+# =========================
 # Blue tape stop logic
 # =========================
-STOP_TARGET_AREA = 250  
+STOP_TARGET_AREA = 500  
 STOP_TARGET_AREA_MIN = 100
 STOP_BRAKE_MS = 150
 STOP_CONFIRM_FRAMES = 2
+
+# =========================
+# Rescue line follower
+# =========================
+RESCUE_LINE_FOLLOW_DURATION_S = 10
+RESCUE_LINE_FOLLOW_BASE_RPM = 150.0
+
+SAFE_ZONE_AREA_MIN = 100
+SAFE_ZONE_STOP_AREA = 500
+SAFE_ZONE_CONFIRM_FRAMES = 2
+SAFE_ZONE_BRAKE_MS = 150
+
+# =========================
+# Return line follower
+# =========================
+RETURN_LINE_FOLLOW_DURATION_S = 10
+RETURN_LINE_FOLLOW_BASE_RPM = 150.0
 
 # =========================
 # Servo / Pickup

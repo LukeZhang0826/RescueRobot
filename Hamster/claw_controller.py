@@ -1,9 +1,9 @@
-# pickup_controller.py
+# claw_controller.py
 import utime
 from servo import Servo
 
 
-class PickupController:
+class ClawController:
     def __init__(self, cfg):
         self.cfg = cfg
 
@@ -75,6 +75,19 @@ class PickupController:
 
         self.holding = True
         print("Pickup sequence complete")
+        return True
+    
+    def run_release_sequence(self):
+        if not self.holding:
+            return
+
+        print("Release sequence start")
+        self.lower_lift()
+        self.open_claw()
+        self.raise_lift()
+
+        self.holding = False
+        print("Release sequence complete")
         return True
 
     def hold_object(self):

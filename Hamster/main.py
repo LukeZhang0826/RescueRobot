@@ -7,8 +7,10 @@ from basic_movements import BasicMovements
 from button import Button
 from pixy import PixySPI
 from search_line_follower import SearchLineFollower
+from rescue_line_follower import RescueLineFollower
+from return_line_follow import ReturnLineFollower
 from target_approach import TargetApproach
-from pickup_controller import PickupController
+from claw_controller import ClawController
 from robot_mission import RobotMission
 
 
@@ -42,17 +44,23 @@ def main():
     )
 
     mover = BasicMovements(motors, encoders, cfg)
-    follower = SearchLineFollower(motors, encoders, pixy, cfg)
+    search_follower = SearchLineFollower(motors, encoders, pixy, cfg)
+    rescue_follower = RescueLineFollower(motors, encoders, pixy, cfg)
+    return_follower = ReturnLineFollower(motors, encoders, pixy, cfg)
     target_approach = TargetApproach(pixy, mover, cfg)
-    pickup = PickupController(cfg)
+    claw = ClawController(cfg)
 
     mission = RobotMission(
         button=button,
-        follower=follower,
+        search_follower=search_follower,
+        rescue_follower=rescue_follower,
+        return_follower=return_follower,
         target_approach=target_approach,
-        pickup=pickup
+        claw=claw,
+        mover=mover,
+        cfg=cfg
     )
-
+    
     print("Robot ready")
 
     while True:

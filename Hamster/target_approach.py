@@ -18,9 +18,22 @@ class TargetApproach:
 
     def _get_target_block(self):
         return self.pixy.best_block(
-            sigmap=self.cfg.PIXY_SIGNATURE_7,
+            sigmap=self.cfg.PIXY_SIGNATURE_1, # red circle at the center of the target zone
             area_min=self.cfg.TARGET_AREA_MIN
         )
+
+    def _get_target_point(self, block):
+        """
+        Return the top-center point of the Pixy block.
+
+        Pixy block coordinates are centered at (x, y), so:
+          top_center_x = x
+          top_center_y = y - h/2
+        """
+        x = block["x"]
+        y = block["y"] - (block["h"] // 2)
+        return x, y
+
 
     def _turn_counts_from_error(self, ex):
         aex = abs(ex)
@@ -61,8 +74,7 @@ class TargetApproach:
                 utime.sleep_ms(cfg.TARGET_SETTLE_MS)
                 continue
 
-            x = block["x"]
-            y = block["y"]
+            x, y = self._get_target_point(block)
             area = block["area"]
 
             ex = x - cfg.TARGET_X
@@ -73,7 +85,10 @@ class TargetApproach:
 
             if cfg.TARGET_DEBUG:
                 print(
-                    f"[{step}] sig={block['sig']} x={x} y={y} w={block['w']} h={block['h']} area={area} "
+                    f"[{step}] sig={block['sig']} "
+                    f"center=({block['x']},{block['y']}) "
+                    f"top_center=({x},{y}) "
+                    f"w={block['w']} h={block['h']} area={area} "
                     f"ex={ex} ey={ey}"
                 )
 
@@ -112,7 +127,7 @@ class TargetApproach:
             if not y_ok:
                 move_counts = self._move_counts_from_error(ey)
 
-                # If blob is too high in image, it is usually farther away -> move forward
+                # If target point is too high in image, move forward
                 if ey < 0:
                     if cfg.TARGET_DEBUG:
                         print(f"  move forward counts={move_counts}")

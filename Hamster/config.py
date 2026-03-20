@@ -135,23 +135,23 @@ LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
 TARGET_AREA_MIN = 200   # Minimum area for valid target block
 
 TARGET_X = 158            # desired blob x in image
-TARGET_Y = 180            # desired blob y in image
+TARGET_Y = 154            # desired blob y in image
 
 TARGET_DEADBAND_X = 10           # pixels
 TARGET_DEADBAND_Y = 10           # pixels
 
 TARGET_SEARCH_TURN_COUNTS = 12   # tiny search nudge
-TARGET_SEARCH_TURN_PERCENT = 16.0
+TARGET_SEARCH_TURN_PERCENT = 25.0
 
 TARGET_TURN_COUNTS_SMALL = 4
 TARGET_TURN_COUNTS_MED = 7
 TARGET_TURN_COUNTS_LARGE = 12
-TARGET_TURN_PERCENT = 16.0
+TARGET_TURN_PERCENT = 25.0
 
 TARGET_MOVE_COUNTS_SMALL = 8
 TARGET_MOVE_COUNTS_MED = 12
 TARGET_MOVE_COUNTS_LARGE = 14
-TARGET_MOVE_PERCENT = 16.0
+TARGET_MOVE_PERCENT = 25.0
 
 TARGET_APPROACH_MAX_STEPS = 40   # safety cap
 TARGET_SETTLE_MS = 120           # pause after each primitive
@@ -170,10 +170,10 @@ RIGHT_REV_MIN = 22.0
 # =========================
 # Blue tape stop logic
 # =========================
-STOP_TARGET_AREA = 10000  
-STOP_TARGET_AREA_MIN = 1000
+STOP_TARGET_AREA = 250  
+STOP_TARGET_AREA_MIN = 100
 STOP_BRAKE_MS = 150
-STOP_CONFIRM_FRAMES = 5
+STOP_CONFIRM_FRAMES = 2
 
 # =========================
 # Servo / Pickup

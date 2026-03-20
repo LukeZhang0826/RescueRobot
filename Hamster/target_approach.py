@@ -51,11 +51,11 @@ class TargetApproach:
 
             if block is None:
                 if cfg.TARGET_DEBUG:
-                    print(f"[{step}] no target block -> search turn right")
-                self.mover.turn_right_counts(
-                    target_counts=cfg.TARGET_SEARCH_TURN_COUNTS,
-                    base_percent=cfg.TARGET_SEARCH_TURN_PERCENT,
-                    timeout_s=1.0,
+                    print(f"[{step}] no target block -> move forward")
+                self.mover.move_forward(
+                    target_counts=12,
+                    base_percent=cfg.TARGET_MOVE_PERCENT,
+                    timeout_s=0.5,
                     debug=False
                 )
                 utime.sleep_ms(cfg.TARGET_SETTLE_MS)

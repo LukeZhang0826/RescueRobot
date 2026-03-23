@@ -111,7 +111,7 @@ PIXY_SIGNATURE_ALL = 0xFF # All signatures (for get_blocks sigmap)
 # =========================
 LINE_FOLLOW_DURATION_S = 10    # How long to run (seconds)
 
-LINE_FOLLOW_BASE_RPM = 175.0     # Forward speed when centered SPEED
+LINE_FOLLOW_BASE_RPM = 150.0     # Forward speed when centered SPEED
 
 LINE_FOLLOW_MAX_RPM = 400.0      # Maximum wheel RPM
 LINE_FOLLOW_MIN_RPM = 40.0       # Absolute floor speed to prevent stalling
@@ -122,8 +122,8 @@ LINE_FOLLOW_TALL_BLOCK_H = 80   # If block height exceeds this, it's "too much" 
 LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE = 0.65  # Scale down error when seeing "too much" of the line to prevent overreacting
 
 # PD gains for steering
-Kp_STEER = 0.40           # RPM per pixel error
-Kd_STEER = 0.15           # Derivative gain (dampen oscillations)
+Kp_STEER = 0.3           # RPM per pixel error
+Kd_STEER = 0.3           # Derivative gain (dampen oscillations)
 
 LINE_FOLLOW_STEER_SIGN = +1      # +1 or -1 to flip turn direction
 LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
@@ -221,7 +221,7 @@ STOP_CONFIRM_FRAMES = 2
 # Rescue line follower
 # =========================
 RESCUE_LINE_FOLLOW_DURATION_S = 10
-RESCUE_LINE_FOLLOW_BASE_RPM = 175.0 #SPEED
+RESCUE_LINE_FOLLOW_BASE_RPM = 150.0 #SPEED
 
 SAFE_ZONE_AREA_MIN = 100
 SAFE_ZONE_STOP_AREA = 500
@@ -232,7 +232,7 @@ SAFE_ZONE_BRAKE_MS = 150
 # Return line follower
 # =========================
 RETURN_LINE_FOLLOW_DURATION_S = 10
-RETURN_LINE_FOLLOW_BASE_RPM = 175.0 #SPEED
+RETURN_LINE_FOLLOW_BASE_RPM = 150.0 #SPEED
 
 # =========================
 # Servo / Pickup

@@ -118,12 +118,12 @@ class RescueLineFollower:
 
                         target_rpm_left = clamp(
                             target_rpm_left,
-                            -cfg.LINE_FOLLOW_MAX_RPM,
+                            0,
                             cfg.LINE_FOLLOW_MAX_RPM
                         )
                         target_rpm_right = clamp(
                             target_rpm_right,
-                            -cfg.LINE_FOLLOW_MAX_RPM,
+                            0,
                             cfg.LINE_FOLLOW_MAX_RPM
                         )
 

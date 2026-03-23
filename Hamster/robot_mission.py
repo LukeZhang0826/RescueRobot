@@ -49,7 +49,6 @@ class RobotMission:
 
                 if result == "stop_target":
                     print("target reached - stopping line follow")
-                    utime.sleep_ms(1000)
                     self.state = self.STATE_APPROACH_TARGET
                 else:
                     print("Line follow failed with result:", result)
@@ -108,7 +107,6 @@ class RobotMission:
 
                 if result == "safe_zone":
                     print("Safe zone reached - stopping")
-                    utime.sleep_ms(1000)
                     self.state = self.STATE_APPROACH_SAFE_ZONE
                 else:
                     print("Rescue line follow failed with result:", result)
@@ -150,6 +148,14 @@ class RobotMission:
             # In the find line state, we execute a turn to try to find the line again. If successful, we transition to the return line follow state to follow the line back towards the start. If it fails (e.g. can't find line), we go to error state.  
             elif self.state == self.STATE_FIND_LINE:
                 print("[STATE] FIND_LINE")
+
+                self.mover.move_backward(
+                    target_counts=self.cfg.FIND_LINE_REVERSE_COUNTS,
+                    base_percent=self.cfg.FIND_LINE_REVERSE_PERCENT,
+                    timeout_s=self.cfg.FIND_LINE_REVERSE_TIMEOUT_S,
+                    debug=self.cfg.FIND_LINE_REVERSE_DEBUG
+                )
+                utime.sleep_ms(self.cfg.FIND_LINE_REVERSE_SETTLE_MS)
 
                 self.mover.turn_left_counts(
                     target_counts=self.cfg.FIND_LINE_TURN_COUNTS,

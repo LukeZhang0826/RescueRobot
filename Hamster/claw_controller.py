@@ -71,6 +71,7 @@ class ClawController:
         self.open_claw()
         self.lower_lift()
         self.close_claw()
+        utime.sleep_ms(self.cfg.T_LIFT_MS)
         self.raise_lift()
 
         self.holding = True

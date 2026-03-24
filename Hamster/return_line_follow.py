@@ -71,16 +71,20 @@ class ReturnLineFollower:
                         last_error_px = 0.0
                     else:
                         error_px = line_block["x"] - cfg.PIXY_CENTER_X
+                        
+                        if last_error_px == 0.0:
+                            last_error_px = error_px
 
                         if abs(error_px) <= cfg.LINE_FOLLOW_DEADBAND_PX:
                             error_px = 0
+                        
 
                         if line_block["h"] >= cfg.LINE_FOLLOW_TALL_BLOCK_H:
                             error_px *= cfg.LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE
 
                         error_derivative = (error_px - last_error_px) / outer_dt
                         last_error_px = error_px
-
+                            
                         turn_rpm_differential = cfg.LINE_FOLLOW_STEER_SIGN * (
                             cfg.Kp_STEER * error_px +
                             cfg.Kd_STEER * error_derivative
@@ -92,8 +96,14 @@ class ReturnLineFollower:
                             cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM
                         )
 
-                        target_rpm_left = cfg.RETURN_LINE_FOLLOW_BASE_RPM + turn_rpm_differential
-                        target_rpm_right = cfg.RETURN_LINE_FOLLOW_BASE_RPM - turn_rpm_differential
+                        speed_scale = 1.0 - clamp(
+                            abs(turn_rpm_differential) / cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM,
+                            0.0,
+                            cfg.MAX_TURNING_SLOWDOWN
+                        )
+                        scaled_base = cfg.LINE_FOLLOW_BASE_RPM * speed_scale
+                        target_rpm_left = scaled_base + turn_rpm_differential
+                        target_rpm_right = scaled_base - turn_rpm_differential
 
                         target_rpm_left = clamp(
                             target_rpm_left,

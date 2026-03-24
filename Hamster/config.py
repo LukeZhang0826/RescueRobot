@@ -17,10 +17,10 @@ CSV_FOLDER = "motor_tests"
 # =========================
 # PI gains (per wheel)
 # =========================
-Kp_L = 0.20
-Ki_L = 0.19
-Kp_R = 0.20
-Ki_R = 0.19
+Kp_L = 0.25
+Ki_L = 0.22
+Kp_R = 0.25
+Ki_R = 0.22
 
 # Motor deadzone compensation
 USE_MIN_PWM_BOOST = True
@@ -109,25 +109,26 @@ PIXY_SIGNATURE_ALL = 0xFF # All signatures (for get_blocks sigmap)
 # =========================
 # Search Line Follower (Outer PD Loop)
 # =========================
-LINE_FOLLOW_DURATION_S = 10    # How long to run (seconds)
+LINE_FOLLOW_DURATION_S = 25    # How long to run (seconds)
 
-LINE_FOLLOW_BASE_RPM = 150.0     # Forward speed when centered SPEED
+LINE_FOLLOW_BASE_RPM = 200.0     # Forward speed when centered SPEED
 
 LINE_FOLLOW_MAX_RPM = 400.0      # Maximum wheel RPM
 LINE_FOLLOW_MIN_RPM = 40.0       # Absolute floor speed to prevent stalling
 
-LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 200.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
+LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 120.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
 
 LINE_FOLLOW_TALL_BLOCK_H = 80   # If block height exceeds this, it's "too much" of the line
 LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE = 0.65  # Scale down error when seeing "too much" of the line to prevent overreacting
 
 # PD gains for steering
-Kp_STEER = 0.3           # RPM per pixel error
+Kp_STEER = 0.65           # RPM per pixel error
 Kd_STEER = 0.3           # Derivative gain (dampen oscillations)
 
 LINE_FOLLOW_STEER_SIGN = +1      # +1 or -1 to flip turn direction
 LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
 
+MAX_TURNING_SLOWDOWN = 0.45
 
 # =========================
 # Target Approach
@@ -182,13 +183,13 @@ TURN_AROUND_DEBUG = True
 # =========================
 # Approach safe zone
 # =========================
-TURN_INTO_SAFE_ZONE_COUNTS = 100
+TURN_INTO_SAFE_ZONE_COUNTS = 50
 TURN_INTO_SAFE_ZONE_PERCENT = 25.0
 TURN_INTO_SAFE_ZONE_TIMEOUT_S = 3.0
 TURN_INTO_SAFE_ZONE_SETTLE_MS = 200
 TURN_INTO_SAFE_ZONE_DEBUG = True
 
-DRIVE_INTO_SAFE_ZONE_COUNTS = 90
+DRIVE_INTO_SAFE_ZONE_COUNTS = 50
 DRIVE_INTO_SAFE_ZONE_PERCENT = 25.0
 DRIVE_INTO_SAFE_ZONE_TIMEOUT_S = 3.0
 DRIVE_INTO_SAFE_ZONE_SETTLE_MS = 200
@@ -197,13 +198,13 @@ DRIVE_INTO_SAFE_ZONE_DEBUG = True
 # ==========================
 # Find line after safe zone dropoff
 # ==========================
-FIND_LINE_TURN_COUNTS = 100
+FIND_LINE_TURN_COUNTS = 70
 FIND_LINE_TURN_PERCENT = 25.0
 FIND_LINE_TIMEOUT_S = 3.0
 FIND_LINE_SETTLE_MS = 200
 FIND_LINE_SETTLE_DEBUG = True
 
-FIND_LINE_REVERSE_COUNTS = 90
+FIND_LINE_REVERSE_COUNTS = 50
 FIND_LINE_REVERSE_PERCENT = 25.0
 FIND_LINE_REVERSE_TIMEOUT_S = 3.0
 FIND_LINE_REVERSE_SETTLE_MS = 200
@@ -214,14 +215,14 @@ FIND_LINE_REVERSE_DEBUG = True
 # =========================
 STOP_TARGET_AREA = 500  
 STOP_TARGET_AREA_MIN = 100
-STOP_BRAKE_MS = 150
+STOP_BRAKE_MS = 200
 STOP_CONFIRM_FRAMES = 2
 
 # =========================
 # Rescue line follower
 # =========================
 RESCUE_LINE_FOLLOW_DURATION_S = 10
-RESCUE_LINE_FOLLOW_BASE_RPM = 150.0 #SPEED
+RESCUE_LINE_FOLLOW_BASE_RPM = 170.0 #SPEED
 
 SAFE_ZONE_AREA_MIN = 100
 SAFE_ZONE_STOP_AREA = 500
@@ -251,14 +252,14 @@ SERVO_US_MIN = 900
 SERVO_US_MAX = 2100
 
 # Calibrated pseudo-angles
-CLAW_OPEN = 140
+CLAW_OPEN = 120
 CLAW_CLOSED = -40
 
-LIFT_DOWN = -70
-LIFT_UP = 70
+LIFT_DOWN = -60
+LIFT_UP = 80
 
 # Timing (ms)
 SERVO_POWER_ON_DELAY_MS = 100
-T_CLAW_MS = 100
-T_LIFT_MS = 100
-T_SETTLE_MS = 100
+T_CLAW_MS = 300
+T_LIFT_MS = 300
+T_SETTLE_MS = 200

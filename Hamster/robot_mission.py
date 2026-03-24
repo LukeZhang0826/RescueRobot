@@ -69,7 +69,6 @@ class RobotMission:
             elif self.state == self.STATE_PICKUP:
                 print("[STATE] PICKUP")
 
-                self.claw.initialize()
                 success = self.claw.run_pickup_sequence()
 
                 if success:

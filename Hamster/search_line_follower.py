@@ -114,9 +114,16 @@ class SearchLineFollower:
                             cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM
                         )
 
-                        target_rpm_left = cfg.LINE_FOLLOW_BASE_RPM + turn_rpm_differential
-                        target_rpm_right = cfg.LINE_FOLLOW_BASE_RPM - turn_rpm_differential
+                        speed_scale = 1.0 - clamp(
+                            abs(turn_rpm_differential) / cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM,
+                            0.0,
+                            cfg.MAX_TURNING_SLOWDOWN
+                        )
+                        scaled_base = cfg.LINE_FOLLOW_BASE_RPM * speed_scale
 
+                        target_rpm_left = scaled_base + turn_rpm_differential
+                        target_rpm_right = scaled_base - turn_rpm_differential
+                        
                         target_rpm_left = clamp(
                             target_rpm_left,
                             0,

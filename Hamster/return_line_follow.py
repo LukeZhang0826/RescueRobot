@@ -3,21 +3,42 @@ from utils import clamp
 
 
 class ReturnLineFollower:
-    def __init__(self, motors, encoders, pixy, cfg):
+    STATE_TRACKING = "tracking"
+    STATE_RECOVERING = "recovering"
+
+    def __init__(self, motors, encoders, pixy, mover, cfg):
         self.motors = motors
         self.encoders = encoders
         self.pixy = pixy
+        self.mover = mover
         self.cfg = cfg
+
+    def _start_recovery(self, now_ms, last_seen_side):
+        self.state = self.STATE_RECOVERING
+        self.recovery_start_ms = now_ms
+        self.last_seen_side = last_seen_side
+
+    def _do_recovery_step(self):
+        if self.last_seen_side < 0:
+            self.mover.turn_left_counts(
+                self.cfg.LINE_RECOVERY_STEP_COUNTS,
+                self.cfg.LINE_RECOVERY_TURN_PERCENT,
+                self.cfg.LINE_RECOVERY_STEP_TIMEOUT_S,
+                False,
+            )
+        else:
+            self.mover.turn_right_counts(
+                self.cfg.LINE_RECOVERY_STEP_COUNTS,
+                self.cfg.LINE_RECOVERY_TURN_PERCENT,
+                self.cfg.LINE_RECOVERY_STEP_TIMEOUT_S,
+                False,
+            )
 
     def run(self):
         cfg = self.cfg
 
-        OUTER_INTERVAL_MS = 20
-        INNER_INTERVAL_MS = 20
-
         integral_left = 0.0
         integral_right = 0.0
-
         last_error_px = 0.0
 
         rpm_left_filtered = 0.0
@@ -26,7 +47,9 @@ class ReturnLineFollower:
         target_rpm_left = 0.0
         target_rpm_right = 0.0
 
-        result = "unknown"
+        self.state = self.STATE_TRACKING
+        self.recovery_start_ms = 0
+        self.last_seen_side = cfg.LINE_RECOVERY_DEFAULT_SIDE
 
         self.encoders.reset()
         last_encA, last_encB = self.encoders.read_counts()
@@ -35,139 +58,89 @@ class ReturnLineFollower:
         last_outer_ms = start_ms
         last_inner_ms = start_ms
 
-        print("Return line follower started")
-
         try:
             while True:
                 now = utime.ticks_ms()
-                elapsed_s = utime.ticks_diff(now, start_ms) / 1000.0
 
-                if elapsed_s >= cfg.RETURN_LINE_FOLLOW_DURATION_S:
-                    print("Return duration reached - stopping")
-                    result = "timeout"
-                    break
+                if utime.ticks_diff(now, start_ms) / 1000.0 >= cfg.RETURN_LINE_FOLLOW_DURATION_S:
+                    return "timeout"
 
-                outer_dt_ms = utime.ticks_diff(now, last_outer_ms)
-                if outer_dt_ms >= OUTER_INTERVAL_MS:
-                    outer_dt = outer_dt_ms / 1000.0
+                # OUTER
+                if utime.ticks_diff(now, last_outer_ms) >= 20:
+                    outer_dt = utime.ticks_diff(now, last_outer_ms) / 1000.0
                     last_outer_ms = now
 
-                    blocks = self.pixy.get_blocks(
-                        sigmap=cfg.PIXY_SIGNATURE_ALL,
-                        max_blocks=10
-                    )
-
-                    line_block = self.pixy.best_block_by_sig(
-                        blocks,
-                        sig=1,
-                        area_min=cfg.PIXY_AREA_MIN
-                    )
+                    blocks = self.pixy.get_blocks(cfg.PIXY_SIGNATURE_ALL, 10)
+                    line_block = self.pixy.best_block_by_sig(blocks, 1, cfg.PIXY_AREA_MIN)
 
                     if line_block is None:
-                        target_rpm_left = 0.0
-                        target_rpm_right = 0.0
-                        integral_left = 0.0
-                        integral_right = 0.0
-                        last_error_px = 0.0
+                        target_rpm_left = target_rpm_right = 0
+
+                        if self.state != self.STATE_RECOVERING:
+                            self._start_recovery(now, self.last_seen_side)
+                        elif utime.ticks_diff(now, self.recovery_start_ms) >= cfg.LINE_RECOVERY_TIMEOUT_MS:
+                            return "line_lost"
+
                     else:
-                        error_px = line_block["x"] - cfg.PIXY_CENTER_X
+                        if line_block["x"] < cfg.PIXY_CENTER_X:
+                            self.last_seen_side = -1
+                        else:
+                            self.last_seen_side = 1
 
-                        if abs(error_px) <= cfg.LINE_FOLLOW_DEADBAND_PX:
-                            error_px = 0
+                        self.state = self.STATE_TRACKING
 
-                        if line_block["h"] >= cfg.LINE_FOLLOW_TALL_BLOCK_H:
-                            error_px *= cfg.LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE
+                        error = line_block["x"] - cfg.PIXY_CENTER_X
+                        d = (error - last_error_px) / outer_dt
+                        last_error_px = error
 
-                        error_derivative = (error_px - last_error_px) / outer_dt
-                        last_error_px = error_px
-
-                        turn_rpm_differential = cfg.LINE_FOLLOW_STEER_SIGN * (
-                            cfg.Kp_STEER * error_px +
-                            cfg.Kd_STEER * error_derivative
+                        turn = cfg.LINE_FOLLOW_STEER_SIGN * (
+                            cfg.Kp_STEER * error + cfg.Kd_STEER * d
                         )
 
-                        turn_rpm_differential = clamp(
-                            turn_rpm_differential,
-                            -cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM,
-                            cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM
-                        )
+                        turn = clamp(turn,
+                                     -cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM,
+                                      cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM)
 
-                        speed_scale = 1.0 - clamp(
-                            abs(turn_rpm_differential) / cfg.LINE_FOLLOW_MAX_DIFFERENTIAL_RPM,
-                            0.0,
-                            cfg.MAX_TURNING_SLOWDOWN
-                        )
-                        scaled_base = cfg.LINE_FOLLOW_BASE_RPM * speed_scale
-                        target_rpm_left = scaled_base + turn_rpm_differential
-                        target_rpm_right = scaled_base - turn_rpm_differential
-                        
-                        target_rpm_left = clamp(
-                            target_rpm_left,
-                            0,
-                            cfg.LINE_FOLLOW_MAX_RPM
-                        )
-                        target_rpm_right = clamp(
-                            target_rpm_right,
-                            0,
-                            cfg.LINE_FOLLOW_MAX_RPM
-                        )
+                        base = cfg.RETURN_LINE_FOLLOW_BASE_RPM
 
-                inner_dt_ms = utime.ticks_diff(now, last_inner_ms)
-                if inner_dt_ms >= INNER_INTERVAL_MS:
-                    inner_dt = inner_dt_ms / 1000.0
+                        target_rpm_left = clamp(base + turn, 0, cfg.LINE_FOLLOW_MAX_RPM)
+                        target_rpm_right = clamp(base - turn, 0, cfg.LINE_FOLLOW_MAX_RPM)
+
+                # INNER
+                if utime.ticks_diff(now, last_inner_ms) >= 20:
+                    dt = utime.ticks_diff(now, last_inner_ms) / 1000.0
                     last_inner_ms = now
 
+                    if self.state == self.STATE_RECOVERING:
+                        self.motors.coast()
+                        self._do_recovery_step()
+
+                        last_encA, last_encB = self.encoders.read_counts()
+                        integral_left = integral_right = 0
+                        continue
+
                     encA, encB = self.encoders.read_counts()
-                    delta_encA = encA - last_encA
-                    delta_encB = encB - last_encB
-                    last_encA = encA
-                    last_encB = encB
+                    dA, dB = encA - last_encA, encB - last_encB
+                    last_encA, last_encB = encA, encB
 
-                    cps_left = delta_encB / inner_dt
-                    cps_right = delta_encA / inner_dt
-                    rpm_left_raw = cps_left * cfg.CPS_TO_RPM
-                    rpm_right_raw = cps_right * cfg.CPS_TO_RPM
+                    rpmL = (dB / dt) * cfg.CPS_TO_RPM
+                    rpmR = (dA / dt) * cfg.CPS_TO_RPM
 
-                    rpm_left_filtered += cfg.SPEED_FILTER_ALPHA * (rpm_left_raw - rpm_left_filtered)
-                    rpm_right_filtered += cfg.SPEED_FILTER_ALPHA * (rpm_right_raw - rpm_right_filtered)
+                    rpm_left_filtered += cfg.SPEED_FILTER_ALPHA * (rpmL - rpm_left_filtered)
+                    rpm_right_filtered += cfg.SPEED_FILTER_ALPHA * (rpmR - rpm_right_filtered)
 
-                    error_left = target_rpm_left - rpm_left_filtered
-                    error_right = target_rpm_right - rpm_right_filtered
+                    eL = target_rpm_left - rpm_left_filtered
+                    eR = target_rpm_right - rpm_right_filtered
 
-                    integral_left = clamp(integral_left + error_left * inner_dt, -100.0, 100.0)
-                    integral_right = clamp(integral_right + error_right * inner_dt, -100.0, 100.0)
+                    integral_left = clamp(integral_left + eL * dt, -100, 100)
+                    integral_right = clamp(integral_right + eR * dt, -100, 100)
 
-                    if target_rpm_left <= 0:
-                        integral_left = 0.0
-                    if target_rpm_right <= 0:
-                        integral_right = 0.0
+                    pwmL = clamp(cfg.Kp_L * eL + cfg.Ki_L * integral_left, -100, 100)
+                    pwmR = clamp(cfg.Kp_R * eR + cfg.Ki_R * integral_right, -100, 100)
 
-                    pwm_left = (cfg.Kp_L * error_left) + (cfg.Ki_L * integral_left)
-                    pwm_right = (cfg.Kp_R * error_right) + (cfg.Ki_R * integral_right)
-
-                    pwm_left = clamp(pwm_left, -100.0, 100.0)
-                    pwm_right = clamp(pwm_right, -100.0, 100.0)
-
-                    if cfg.USE_MIN_PWM_BOOST:
-                        if target_rpm_left > 0 and 0 < pwm_left < cfg.PWM_MIN_MOVE_L:
-                            pwm_left = cfg.PWM_MIN_MOVE_L
-                        if target_rpm_right > 0 and 0 < pwm_right < cfg.PWM_MIN_MOVE_R:
-                            pwm_right = cfg.PWM_MIN_MOVE_R
-
-                    if target_rpm_left <= 0:
-                        pwm_left = 0.0
-                    if target_rpm_right <= 0:
-                        pwm_right = 0.0
-
-                    self.motors.drive_percent(pwm_left, pwm_right)
+                    self.motors.drive_percent(pwmL, pwmR)
 
                 utime.sleep_ms(5)
 
         finally:
             self.motors.coast()
-            print("Return line follower stopped | result =", result)
-
-        return result
-
-    def stop(self):
-        self.motors.coast()

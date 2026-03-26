@@ -116,7 +116,7 @@ LINE_FOLLOW_BASE_RPM = 200.0     # Forward speed when centered SPEED
 LINE_FOLLOW_MAX_RPM = 400.0      # Maximum wheel RPM
 LINE_FOLLOW_MIN_RPM = 40.0       # Absolute floor speed to prevent stalling
 
-LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 80.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
+LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 100.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
 
 LINE_FOLLOW_TALL_BLOCK_H = 80   # If block height exceeds this, it's "too much" of the line
 LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE = 0.65  # Scale down error when seeing "too much" of the line to prevent overreacting
@@ -265,8 +265,13 @@ T_LIFT_MS = 100
 T_SETTLE_MS = 100
 
 # =========================
-# Line recovery
+# Line recovery (ALL followers)
 # =========================
-LINE_RECOVERY_TURN_PWM = 24.0
-LINE_RECOVERY_TIMEOUT_MS = 1200
-LINE_RECOVERY_DEFAULT_SIDE = 1   # -1 = left, +1 = right
+LINE_RECOVERY_STEP_COUNTS = 35
+LINE_RECOVERY_TURN_PERCENT = 35.0
+LINE_RECOVERY_STEP_TIMEOUT_S = 0.35
+LINE_RECOVERY_TIMEOUT_MS = 3000
+
+# default direction if we’ve never seen the line yet
+# 1 = right, -1 = left
+LINE_RECOVERY_DEFAULT_SIDE = 1

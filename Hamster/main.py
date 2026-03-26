@@ -44,9 +44,9 @@ def main():
     )
 
     mover = BasicMovements(motors, encoders, cfg)
-    search_follower = SearchLineFollower(motors, encoders, pixy, cfg)
-    rescue_follower = RescueLineFollower(motors, encoders, pixy, cfg)
-    return_follower = ReturnLineFollower(motors, encoders, pixy, cfg)
+    search_follower = SearchLineFollower(motors, encoders, pixy, mover, cfg)
+    rescue_follower = RescueLineFollower(motors, encoders, pixy, mover, cfg)
+    return_follower = ReturnLineFollower(motors, encoders, pixy, mover, cfg)
     target_approach = TargetApproach(pixy, mover, cfg)
     claw = ClawController(cfg)
 

@@ -2,7 +2,7 @@ import utime
 from utils import clamp
 
 
-class SearchLineFollower:
+class RescueLineFollower:
     STATE_TRACKING = "tracking"
     STATE_RECOVERING = "recovering"
 
@@ -52,7 +52,7 @@ class SearchLineFollower:
         target_rpm_left = 0.0
         target_rpm_right = 0.0
 
-        stop_confirm_count = 0
+        safe_confirm_count = 0
         result = "unknown"
 
         self.state = self.STATE_TRACKING
@@ -66,14 +66,14 @@ class SearchLineFollower:
         last_outer_ms = start_ms
         last_inner_ms = start_ms
 
-        print("Search line follower started")
+        print("Rescue line follower started")
 
         try:
             while True:
                 now = utime.ticks_ms()
                 elapsed_s = utime.ticks_diff(now, start_ms) / 1000.0
 
-                if elapsed_s >= cfg.LINE_FOLLOW_DURATION_S:
+                if elapsed_s >= cfg.RESCUE_LINE_FOLLOW_DURATION_S:
                     print("Duration reached - stopping")
                     result = "timeout"
                     break
@@ -88,10 +88,10 @@ class SearchLineFollower:
                         max_blocks=10
                     )
 
-                    stop_block = self.pixy.best_block_by_sig(
+                    safe_block = self.pixy.best_block_by_sig(
                         blocks,
-                        sig=3,
-                        area_min=cfg.STOP_TARGET_AREA_MIN
+                        sig=7,
+                        area_min=cfg.SAFE_ZONE_AREA_MIN
                     )
 
                     line_block = self.pixy.best_block_by_sig(
@@ -100,18 +100,18 @@ class SearchLineFollower:
                         area_min=cfg.PIXY_AREA_MIN
                     )
 
-                    if stop_block is not None and stop_block["area"] >= cfg.STOP_TARGET_AREA:
-                        stop_confirm_count += 1
-                        print("STOP target seen | area={} count={}".format(
-                            stop_block["area"], stop_confirm_count
+                    if safe_block is not None and safe_block["area"] >= cfg.SAFE_ZONE_STOP_AREA:
+                        safe_confirm_count += 1
+                        print("SAFE ZONE seen | area={} count={}".format(
+                            safe_block["area"], safe_confirm_count
                         ))
                     else:
-                        stop_confirm_count = 0
+                        safe_confirm_count = 0
 
-                    if stop_confirm_count >= cfg.STOP_CONFIRM_FRAMES:
-                        print("STOP target confirmed - braking")
-                        self.motors.brake_ms(cfg.STOP_BRAKE_MS)
-                        result = "stop_target"
+                    if safe_confirm_count >= cfg.SAFE_ZONE_CONFIRM_FRAMES:
+                        print("SAFE ZONE confirmed - braking")
+                        self.motors.brake_ms(cfg.SAFE_ZONE_BRAKE_MS)
+                        result = "safe_zone"
                         break
 
                     if line_block is None:
@@ -168,12 +168,19 @@ class SearchLineFollower:
                             cfg.MAX_TURNING_SLOWDOWN
                         )
                         scaled_base = cfg.LINE_FOLLOW_BASE_RPM * speed_scale
-
                         target_rpm_left = scaled_base + turn_rpm_differential
                         target_rpm_right = scaled_base - turn_rpm_differential
 
-                        target_rpm_left = clamp(target_rpm_left, 0, cfg.LINE_FOLLOW_MAX_RPM)
-                        target_rpm_right = clamp(target_rpm_right, 0, cfg.LINE_FOLLOW_MAX_RPM)
+                        target_rpm_left = clamp(
+                            target_rpm_left,
+                            0,
+                            cfg.LINE_FOLLOW_MAX_RPM
+                        )
+                        target_rpm_right = clamp(
+                            target_rpm_right,
+                            0,
+                            cfg.LINE_FOLLOW_MAX_RPM
+                        )
 
                 inner_dt_ms = utime.ticks_diff(now, last_inner_ms)
                 if inner_dt_ms >= INNER_INTERVAL_MS:
@@ -243,7 +250,7 @@ class SearchLineFollower:
 
         finally:
             self.motors.coast()
-            print("Search line follower stopped | result =", result)
+            print("Rescue line follower stopped | result =", result)
 
         return result
 

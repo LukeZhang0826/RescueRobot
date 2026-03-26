@@ -27,8 +27,13 @@ class BasicMovements:
         self.right_fwd_min = cfg.RIGHT_FWD_MIN
         self.right_rev_min = cfg.RIGHT_REV_MIN
 
-    def stop(self):
-        self.motors.stop()
+    def stop(self, use_brake=True, brake_ms=None):
+        if use_brake:
+            if brake_ms is None:
+                brake_ms = self.cfg.BASIC_BRAKE_MS
+            self.motors.stop(brake_ms=brake_ms)
+        else:
+            self.motors.coast()
 
     def _read_wheels(self):
         encA, encB = self.encoders.read_counts()
@@ -40,13 +45,11 @@ class BasicMovements:
         """
         Enforce different minimum magnitudes depending on wheel + direction.
         """
-        # Left
         if left_cmd > 0:
             left_cmd = max(left_cmd, self.left_fwd_min)
         elif left_cmd < 0:
             left_cmd = -max(abs(left_cmd), self.left_rev_min)
 
-        # Right
         if right_cmd > 0:
             right_cmd = max(right_cmd, self.right_fwd_min)
         elif right_cmd < 0:
@@ -134,7 +137,7 @@ class BasicMovements:
                 utime.sleep_ms(10)
 
         finally:
-            self.stop()
+            self.stop(use_brake=True)
 
     def turn_left_counts(self, target_counts, base_percent=20.0, timeout_s=5.0, debug=False):
         self._turn_in_place(
@@ -238,12 +241,9 @@ class BasicMovements:
                 utime.sleep_ms(10)
 
         finally:
-            self.stop()
+            self.stop(use_brake=True, brake_ms=self.cfg.TURN_BRAKE_MS)
 
     def move_backward(self, target_counts, base_percent=22.0, timeout_s=5.0, debug=False):
-        """
-        Move the robot backward by a specified number of encoder counts.
-        """
         target_counts = int(target_counts)
         if target_counts <= 0:
             self.stop()
@@ -320,4 +320,4 @@ class BasicMovements:
                 utime.sleep_ms(10)
 
         finally:
-            self.stop()
+            self.stop(use_brake=True)

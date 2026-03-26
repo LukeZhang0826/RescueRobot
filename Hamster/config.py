@@ -107,54 +107,52 @@ PIXY_SIGNATURE_7 = 0x40   # Safe Zones (Green Lines)
 PIXY_SIGNATURE_ALL = 0xFF # All signatures (for get_blocks sigmap)
 
 # =========================
-# Line Follower (Outer PD Loop)
+# Search Line Follower (Outer PD Loop)
 # =========================
-LINE_FOLLOW_DURATION_S = 10    # How long to run (seconds)
+LINE_FOLLOW_DURATION_S = 20    # How long to run (seconds)
 
-LINE_FOLLOW_BASE_RPM = 150.0     # Forward speed when centered
+LINE_FOLLOW_BASE_RPM = 250.0     # Forward speed when centered SPEED
 
 LINE_FOLLOW_MAX_RPM = 400.0      # Maximum wheel RPM
 LINE_FOLLOW_MIN_RPM = 40.0       # Absolute floor speed to prevent stalling
 
-LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 200.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
+LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 80.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
 
 LINE_FOLLOW_TALL_BLOCK_H = 80   # If block height exceeds this, it's "too much" of the line
 LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE = 0.65  # Scale down error when seeing "too much" of the line to prevent overreacting
 
 # PD gains for steering
-Kp_STEER = 0.30           # RPM per pixel error
-Kd_STEER = 0.3            # Derivative gain (dampen oscillations)
+Kp_STEER = 0.65           # RPM per pixel error
+Kd_STEER = 0.3           # Derivative gain (dampen oscillations)
 
 LINE_FOLLOW_STEER_SIGN = +1      # +1 or -1 to flip turn direction
 LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
 
+MAX_TURNING_SLOWDOWN = 0.55
 
 # =========================
-# Green Target Approach
+# Target Approach
 # =========================
 TARGET_AREA_MIN = 200   # Minimum area for valid target block
 
 TARGET_X = 158            # desired blob x in image
-TARGET_Y = 180            # desired blob y in image
+TARGET_Y = 50            # desired blob y in image, 30 for course, 108 for home
 
-TARGET_DEADBAND_X = 10           # pixels
+TARGET_DEADBAND_X = 15           # pixels
 TARGET_DEADBAND_Y = 10           # pixels
 
-TARGET_SEARCH_TURN_COUNTS = 12   # tiny search nudge
-TARGET_SEARCH_TURN_PERCENT = 16.0
+TARGET_TURN_COUNTS_SMALL = 8
+TARGET_TURN_COUNTS_MED = 12
+TARGET_TURN_COUNTS_LARGE = 16
+TARGET_TURN_PERCENT = 30.0
 
-TARGET_TURN_COUNTS_SMALL = 4
-TARGET_TURN_COUNTS_MED = 7
-TARGET_TURN_COUNTS_LARGE = 12
-TARGET_TURN_PERCENT = 16.0
+TARGET_MOVE_COUNTS_SMALL = 12
+TARGET_MOVE_COUNTS_MED = 16
+TARGET_MOVE_COUNTS_LARGE = 20
+TARGET_MOVE_PERCENT = 30.0
 
-TARGET_MOVE_COUNTS_SMALL = 8
-TARGET_MOVE_COUNTS_MED = 12
-TARGET_MOVE_COUNTS_LARGE = 14
-TARGET_MOVE_PERCENT = 16.0
-
-TARGET_APPROACH_MAX_STEPS = 40   # safety cap
-TARGET_SETTLE_MS = 120           # pause after each primitive
+TARGET_APPROACH_MAX_STEPS = 20   # safety cap
+TARGET_SETTLE_MS = 50           # pause after each primitive
 TARGET_DEBUG = True
 
 # =========================
@@ -168,9 +166,112 @@ RIGHT_FWD_MIN = 16.0
 RIGHT_REV_MIN = 22.0
 
 # =========================
+# End-of-move braking
+# =========================
+BASIC_BRAKE_MS = 80
+TURN_BRAKE_MS = 120
+
+# =========================
+# Turn-around after pickup
+# =========================
+TURN_AROUND_180_COUNTS = 180
+TURN_AROUND_PERCENT = 25.0
+TURN_AROUND_TIMEOUT_S = 3.0
+TURN_AROUND_SETTLE_MS = 100
+TURN_AROUND_DEBUG = True
+
+# =========================
+# Approach safe zone
+# =========================
+TURN_INTO_SAFE_ZONE_COUNTS = 80
+TURN_INTO_SAFE_ZONE_PERCENT = 25.0
+TURN_INTO_SAFE_ZONE_TIMEOUT_S = 3.0
+TURN_INTO_SAFE_ZONE_SETTLE_MS = 200
+TURN_INTO_SAFE_ZONE_DEBUG = True
+
+DRIVE_INTO_SAFE_ZONE_COUNTS = 30
+DRIVE_INTO_SAFE_ZONE_PERCENT = 25.0
+DRIVE_INTO_SAFE_ZONE_TIMEOUT_S = 3.0
+DRIVE_INTO_SAFE_ZONE_SETTLE_MS = 200
+DRIVE_INTO_SAFE_ZONE_DEBUG = True
+
+# ==========================
+# Find line after safe zone dropoff
+# ==========================
+FIND_LINE_TURN_COUNTS = 80
+FIND_LINE_TURN_PERCENT = 25.0
+FIND_LINE_TIMEOUT_S = 3.0
+FIND_LINE_SETTLE_MS = 200
+FIND_LINE_SETTLE_DEBUG = True
+
+FIND_LINE_REVERSE_COUNTS = 30
+FIND_LINE_REVERSE_PERCENT = 25.0
+FIND_LINE_REVERSE_TIMEOUT_S = 3.0
+FIND_LINE_REVERSE_SETTLE_MS = 200
+FIND_LINE_REVERSE_DEBUG = True
+
+# =========================
 # Blue tape stop logic
 # =========================
-STOP_TARGET_AREA = 10000  
-STOP_TARGET_AREA_MIN = 1000
+STOP_TARGET_AREA = 2000  
+STOP_TARGET_AREA_MIN = 2000
 STOP_BRAKE_MS = 150
-STOP_CONFIRM_FRAMES = 5
+STOP_CONFIRM_FRAMES = 3
+
+# =========================
+# Rescue line follower
+# =========================
+RESCUE_LINE_FOLLOW_DURATION_S = 20
+RESCUE_LINE_FOLLOW_BASE_RPM = 250.0 #SPEED
+
+SAFE_ZONE_AREA_MIN = 100
+SAFE_ZONE_STOP_AREA = 500
+SAFE_ZONE_CONFIRM_FRAMES = 2
+SAFE_ZONE_BRAKE_MS = 150
+
+# =========================
+# Return line follower
+# =========================
+RETURN_LINE_FOLLOW_DURATION_S = 20
+RETURN_LINE_FOLLOW_BASE_RPM = 250.0 #SPEED
+
+# =========================
+# Servo / Pickup
+# =========================
+
+# Pins
+CLAW_PWM_PIN = 1
+CLAW_PWR_PIN = 0
+
+LIFT_PWM_PIN = 14
+LIFT_PWR_PIN = 15
+
+# Servo pulse settings
+SERVO_HZ = 50
+SERVO_US_MIN = 900
+SERVO_US_MAX = 2100
+
+# Calibrated pseudo-angles
+CLAW_OPEN = 100
+CLAW_CLOSED = -70
+
+LIFT_DOWN = -60
+LIFT_UP = 80
+
+# Timing (ms)
+SERVO_POWER_ON_DELAY_MS = 100
+T_CLAW_MS = 100
+T_LIFT_MS = 100
+T_SETTLE_MS = 100
+
+# =========================
+# Line recovery (ALL followers)
+# =========================
+LINE_RECOVERY_STEP_COUNTS = 35
+LINE_RECOVERY_TURN_PERCENT = 35.0
+LINE_RECOVERY_STEP_TIMEOUT_S = 0.35
+LINE_RECOVERY_TIMEOUT_MS = 3000
+
+# default direction if we’ve never seen the line yet
+# 1 = right, -1 = left
+LINE_RECOVERY_DEFAULT_SIDE = 1

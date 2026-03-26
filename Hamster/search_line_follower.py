@@ -1,14 +1,39 @@
-# search_line_follower.py
 import utime
 from utils import clamp
 
 
 class SearchLineFollower:
-    def __init__(self, motors, encoders, pixy, cfg):
+    STATE_TRACKING = "tracking"
+    STATE_RECOVERING = "recovering"
+
+    def __init__(self, motors, encoders, pixy, mover, cfg):
         self.motors = motors
         self.encoders = encoders
         self.pixy = pixy
+        self.mover = mover
         self.cfg = cfg
+
+    def _start_recovery(self, now_ms, last_seen_side):
+        self.state = self.STATE_RECOVERING
+        self.recovery_start_ms = now_ms
+        self.last_seen_side = last_seen_side
+        print("Line lost -> RECOVERING, turning", "right" if last_seen_side > 0 else "left")
+
+    def _do_recovery_step(self):
+        if self.last_seen_side < 0:
+            self.mover.turn_left_counts(
+                target_counts=self.cfg.LINE_RECOVERY_STEP_COUNTS,
+                base_percent=self.cfg.LINE_RECOVERY_TURN_PERCENT,
+                timeout_s=self.cfg.LINE_RECOVERY_STEP_TIMEOUT_S,
+                debug=False,
+            )
+        else:
+            self.mover.turn_right_counts(
+                target_counts=self.cfg.LINE_RECOVERY_STEP_COUNTS,
+                base_percent=self.cfg.LINE_RECOVERY_TURN_PERCENT,
+                timeout_s=self.cfg.LINE_RECOVERY_STEP_TIMEOUT_S,
+                debug=False,
+            )
 
     def run(self):
         cfg = self.cfg
@@ -29,6 +54,10 @@ class SearchLineFollower:
 
         stop_confirm_count = 0
         result = "unknown"
+
+        self.state = self.STATE_TRACKING
+        self.recovery_start_ms = 0
+        self.last_seen_side = cfg.LINE_RECOVERY_DEFAULT_SIDE
 
         self.encoders.reset()
         last_encA, last_encB = self.encoders.read_counts()
@@ -91,7 +120,26 @@ class SearchLineFollower:
                         integral_left = 0.0
                         integral_right = 0.0
                         last_error_px = 0.0
+
+                        if self.state != self.STATE_RECOVERING:
+                            self._start_recovery(now, self.last_seen_side)
+                        else:
+                            recovery_elapsed = utime.ticks_diff(now, self.recovery_start_ms)
+                            if recovery_elapsed >= cfg.LINE_RECOVERY_TIMEOUT_MS:
+                                print("Recovery timeout")
+                                result = "line_lost"
+                                break
                     else:
+                        if line_block["x"] < cfg.PIXY_CENTER_X:
+                            self.last_seen_side = -1
+                        elif line_block["x"] > cfg.PIXY_CENTER_X:
+                            self.last_seen_side = 1
+
+                        if self.state == self.STATE_RECOVERING:
+                            print("Line reacquired -> TRACKING")
+
+                        self.state = self.STATE_TRACKING
+
                         error_px = line_block["x"] - cfg.PIXY_CENTER_X
 
                         if abs(error_px) <= cfg.LINE_FOLLOW_DEADBAND_PX:
@@ -123,22 +171,29 @@ class SearchLineFollower:
 
                         target_rpm_left = scaled_base + turn_rpm_differential
                         target_rpm_right = scaled_base - turn_rpm_differential
-                        
-                        target_rpm_left = clamp(
-                            target_rpm_left,
-                            0,
-                            cfg.LINE_FOLLOW_MAX_RPM
-                        )
-                        target_rpm_right = clamp(
-                            target_rpm_right,
-                            0,
-                            cfg.LINE_FOLLOW_MAX_RPM
-                        )
+
+                        target_rpm_left = clamp(target_rpm_left, 0, cfg.LINE_FOLLOW_MAX_RPM)
+                        target_rpm_right = clamp(target_rpm_right, 0, cfg.LINE_FOLLOW_MAX_RPM)
 
                 inner_dt_ms = utime.ticks_diff(now, last_inner_ms)
                 if inner_dt_ms >= INNER_INTERVAL_MS:
                     inner_dt = inner_dt_ms / 1000.0
                     last_inner_ms = now
+
+                    if self.state == self.STATE_RECOVERING:
+                        self.motors.coast()
+                        self._do_recovery_step()
+
+                        integral_left = 0.0
+                        integral_right = 0.0
+                        rpm_left_filtered = 0.0
+                        rpm_right_filtered = 0.0
+                        last_error_px = 0.0
+                        target_rpm_left = 0.0
+                        target_rpm_right = 0.0
+
+                        last_encA, last_encB = self.encoders.read_counts()
+                        continue
 
                     encA, encB = self.encoders.read_counts()
                     delta_encA = encA - last_encA

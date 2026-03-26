@@ -111,7 +111,7 @@ PIXY_SIGNATURE_ALL = 0xFF # All signatures (for get_blocks sigmap)
 # =========================
 LINE_FOLLOW_DURATION_S = 20    # How long to run (seconds)
 
-LINE_FOLLOW_BASE_RPM = 250.0     # Forward speed when centered SPEED
+LINE_FOLLOW_BASE_RPM = 200.0     # Forward speed when centered SPEED
 
 LINE_FOLLOW_MAX_RPM = 400.0      # Maximum wheel RPM
 LINE_FOLLOW_MIN_RPM = 40.0       # Absolute floor speed to prevent stalling
@@ -213,8 +213,8 @@ FIND_LINE_REVERSE_DEBUG = True
 # =========================
 # Blue tape stop logic
 # =========================
-STOP_TARGET_AREA = 2000  
-STOP_TARGET_AREA_MIN = 2000
+STOP_TARGET_AREA = 1500  
+STOP_TARGET_AREA_MIN = 1500
 STOP_BRAKE_MS = 150
 STOP_CONFIRM_FRAMES = 3
 
@@ -222,7 +222,7 @@ STOP_CONFIRM_FRAMES = 3
 # Rescue line follower
 # =========================
 RESCUE_LINE_FOLLOW_DURATION_S = 20
-RESCUE_LINE_FOLLOW_BASE_RPM = 250.0 #SPEED
+RESCUE_LINE_FOLLOW_BASE_RPM = 200.0 #SPEED
 
 SAFE_ZONE_AREA_MIN = 100
 SAFE_ZONE_STOP_AREA = 500
@@ -233,7 +233,7 @@ SAFE_ZONE_BRAKE_MS = 150
 # Return line follower
 # =========================
 RETURN_LINE_FOLLOW_DURATION_S = 20
-RETURN_LINE_FOLLOW_BASE_RPM = 250.0 #SPEED
+RETURN_LINE_FOLLOW_BASE_RPM = 200.0 #SPEED
 
 # =========================
 # Servo / Pickup

@@ -152,4 +152,4 @@ class TargetApproach:
 
         print("Target approach stopped: max steps reached")
         self.mover.stop()
-        return False
+        return True

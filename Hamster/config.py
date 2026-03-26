@@ -116,19 +116,19 @@ LINE_FOLLOW_BASE_RPM = 200.0     # Forward speed when centered SPEED
 LINE_FOLLOW_MAX_RPM = 400.0      # Maximum wheel RPM
 LINE_FOLLOW_MIN_RPM = 40.0       # Absolute floor speed to prevent stalling
 
-LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 120.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
+LINE_FOLLOW_MAX_DIFFERENTIAL_RPM = 80.0  # Maximum turn differential in RPM (added to one wheel, subtracted from the other)
 
 LINE_FOLLOW_TALL_BLOCK_H = 80   # If block height exceeds this, it's "too much" of the line
 LINE_FOLLOW_TALL_BLOCK_ERROR_SCALE = 0.65  # Scale down error when seeing "too much" of the line to prevent overreacting
 
 # PD gains for steering
-Kp_STEER = 0.7           # RPM per pixel error
+Kp_STEER = 0.65           # RPM per pixel error
 Kd_STEER = 0.3           # Derivative gain (dampen oscillations)
 
 LINE_FOLLOW_STEER_SIGN = +1      # +1 or -1 to flip turn direction
 LINE_FOLLOW_DEADBAND_PX = 5      # Ignore small errors (pixels)
 
-MAX_TURNING_SLOWDOWN = 0.45
+MAX_TURNING_SLOWDOWN = 0.5
 
 # =========================
 # Target Approach
@@ -213,8 +213,8 @@ FIND_LINE_REVERSE_DEBUG = True
 # =========================
 # Blue tape stop logic
 # =========================
-STOP_TARGET_AREA = 500  
-STOP_TARGET_AREA_MIN = 100
+STOP_TARGET_AREA = 2000  
+STOP_TARGET_AREA_MIN = 2000
 STOP_BRAKE_MS = 150
 STOP_CONFIRM_FRAMES = 3
 
@@ -263,3 +263,10 @@ SERVO_POWER_ON_DELAY_MS = 100
 T_CLAW_MS = 100
 T_LIFT_MS = 100
 T_SETTLE_MS = 100
+
+# =========================
+# Line recovery
+# =========================
+LINE_RECOVERY_TURN_PWM = 24.0
+LINE_RECOVERY_TIMEOUT_MS = 1200
+LINE_RECOVERY_DEFAULT_SIDE = 1   # -1 = left, +1 = right

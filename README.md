@@ -12,6 +12,8 @@ We called it Hamster, which is why the robot code lives in `Hamster/`.
 **[Watch the run](https://youtu.be/ffi4BYylVoE)** ·
 **[Final report](https://docs.google.com/document/d/1Vht0kWhE6cIuxJ4qUaxeXvZQmihU7ujaP2H0h0Pqgro/edit)**
 
+Built by Josh Lobe, Koketso Gaborekwe, Luke Zhang, Winters Xia, and Griffin Wilson.
+
 ## The mission
 
 `Hamster/robot_mission.py` is a flat state machine. A button press starts it, and every
